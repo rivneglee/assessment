@@ -3,15 +3,12 @@ package com.stardust.easyassess.assessment.controllers;
 
 import com.stardust.easyassess.assessment.models.Assessment;
 import com.stardust.easyassess.assessment.services.AssessmentService;
-import com.stardust.easyassess.assessment.services.AssessmentServiceImpl;
 import com.stardust.easyassess.core.presentation.ViewJSONWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.ApplicationContext;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Date;
-import java.util.List;
 
 @CrossOrigin("*")
 @RestController
@@ -24,10 +21,8 @@ public class AssessmentController {
     @ResponseBody
     @RequestMapping(method={RequestMethod.POST})
     public ViewJSONWrapper create(@RequestBody Assessment assessment) {
-
         AssessmentService service = applicationContext.getBean(AssessmentService.class);
-
         service.create(assessment);
-        return null;
+        return new ViewJSONWrapper(assessment);
     }
 }

@@ -32,7 +32,6 @@ public class AssessmentServiceImpl implements AssessmentService {
         for (String participant : assessment.getParticipants()) {
             Form form = new Form();
             form.setOwner(participant);
-            form.setTemplateGuid(assessment.getTemplateGuid());
             form.setAssessment(assessment);
             forms.add(form);
             assessment.getForms().add(form);

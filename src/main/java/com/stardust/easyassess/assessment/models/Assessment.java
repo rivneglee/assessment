@@ -2,6 +2,7 @@ package com.stardust.easyassess.assessment.models;
 
 
 import com.stardust.easyassess.assessment.models.form.Form;
+import org.apache.commons.collections.map.HashedMap;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -22,6 +23,7 @@ public class Assessment {
     private String status;
     private List<String> participants;
     private String templateGuid;
+    private Map<String, List<String>> specimenCodes = new HashedMap();
 
     @DBRef
     private List<Form> forms = new ArrayList<Form>();
@@ -96,5 +98,13 @@ public class Assessment {
 
     public void setTemplateGuid(String templateGuid) {
         this.templateGuid = templateGuid;
+    }
+
+    public Map<String, List<String>> getSpecimenCodes() {
+        return specimenCodes;
+    }
+
+    public void setSpecimenCodes(Map<String, List<String>> specimenCodes) {
+        this.specimenCodes = specimenCodes;
     }
 }

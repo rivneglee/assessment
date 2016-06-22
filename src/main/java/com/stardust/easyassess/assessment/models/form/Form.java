@@ -17,8 +17,6 @@ public class Form extends FormElement {
     @DBRef
     private Assessment assessment;
 
-    private String templateGuid;
-
     private String owner;
 
     private List<ActualValue> values = new ArrayList<ActualValue>();
@@ -29,14 +27,6 @@ public class Form extends FormElement {
 
     public void setOwner(String owner) {
         this.owner = owner;
-    }
-
-    public String getTemplateGuid() {
-        return templateGuid;
-    }
-
-    public void setTemplateGuid(String templateGuid) {
-        this.templateGuid = templateGuid;
     }
 
     public List<ActualValue> getValues() {
