@@ -1,0 +1,100 @@
+package com.stardust.easyassess.assessment.models;
+
+
+import com.stardust.easyassess.assessment.models.form.Form;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.DBRef;
+import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.format.annotation.DateTimeFormat;
+
+import java.util.*;
+
+@Document(collection = "assessments")
+public class Assessment {
+    @Id
+    private String id;
+    private String name;
+    @DateTimeFormat(pattern="yyyy-MM-dd")
+    private Date startDate;
+    @DateTimeFormat(pattern="yyyy-MM-dd")
+    private Date endDate;
+    private String owner;
+    private String status;
+    private List<String> participants;
+    private String templateGuid;
+
+    @DBRef
+    private List<Form> forms = new ArrayList<Form>();
+
+    public Date getStartDate() {
+        return startDate;
+    }
+
+    public void setStartDate(Date startDate) {
+        this.startDate = startDate;
+    }
+
+    public Date getEndDate() {
+        return endDate;
+    }
+
+    public void setEndDate(Date endDate) {
+        this.endDate = endDate;
+    }
+
+    public List<Form> getForms() {
+        return forms;
+    }
+
+    public void setForms(List<Form> forms) {
+        this.forms = forms;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getOwner() {
+        return owner;
+    }
+
+    public void setOwner(String owner) {
+        this.owner = owner;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public List<String> getParticipants() {
+        return participants;
+    }
+
+    public void setParticipants(List<String> participants) {
+        this.participants = participants;
+    }
+
+    public String getTemplateGuid() {
+        return templateGuid;
+    }
+
+    public void setTemplateGuid(String templateGuid) {
+        this.templateGuid = templateGuid;
+    }
+}
