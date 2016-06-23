@@ -1,12 +1,12 @@
 package com.stardust.easyassess.assessment.models;
 
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.stardust.easyassess.assessment.models.form.Form;
 import org.apache.commons.collections.map.HashedMap;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.*;
 
@@ -15,13 +15,13 @@ public class Assessment {
     @Id
     private String id;
     private String name;
-    @DateTimeFormat(pattern="yyyy-MM-dd")
+    @JsonFormat(pattern="yyyy-MM-dd")
     private Date startDate;
-    @DateTimeFormat(pattern="yyyy-MM-dd")
+    @JsonFormat(pattern="yyyy-MM-dd")
     private Date endDate;
     private String owner;
     private String status;
-    private List<String> participants;
+    private Map<String, String> participants;
     private String templateGuid;
     private Map<String, List<String>> specimenCodes = new HashedMap();
 
@@ -84,11 +84,11 @@ public class Assessment {
         this.id = id;
     }
 
-    public List<String> getParticipants() {
+    public Map<String, String> getParticipants() {
         return participants;
     }
 
-    public void setParticipants(List<String> participants) {
+    public void setParticipants(Map<String, String> participants) {
         this.participants = participants;
     }
 

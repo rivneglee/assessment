@@ -29,7 +29,7 @@ public class AssessmentServiceImpl implements AssessmentService {
         assessment.setId(UUID.randomUUID().toString());
 
         List<Form> forms = new ArrayList<Form>();
-        for (String participant : assessment.getParticipants()) {
+        for (String participant : assessment.getParticipants().keySet()) {
             Form form = new Form();
             form.setOwner(participant);
             form.setAssessment(assessment);
@@ -39,5 +39,15 @@ public class AssessmentServiceImpl implements AssessmentService {
         }
 
         assessmentRepository.save(assessment);
+    }
+
+    @Override
+    public List<Assessment> findByOwner(String owner) {
+        return assessmentRepository.findAssessmentsByOwner(owner);
+    }
+
+    @Override
+    public List<Form> findFormsByAssessment(String id) {
+        return formRepository.findFormsByAssessmentId(id);
     }
 }

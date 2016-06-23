@@ -1,5 +1,6 @@
 package com.stardust.easyassess.assessment.models.form;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.stardust.easyassess.assessment.models.Assessment;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.DBRef;
@@ -14,6 +15,7 @@ public class Form extends FormElement {
     @Id
     private String id;
 
+    @JsonIgnore
     @DBRef
     private Assessment assessment;
 

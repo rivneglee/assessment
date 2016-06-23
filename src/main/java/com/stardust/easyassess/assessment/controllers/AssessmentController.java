@@ -25,4 +25,12 @@ public class AssessmentController {
         service.create(assessment);
         return new ViewJSONWrapper(assessment);
     }
+
+    @ResponseBody
+    @RequestMapping(value = "/list",method={RequestMethod.GET})
+    public ViewJSONWrapper create() {
+        AssessmentService service = applicationContext.getBean(AssessmentService.class);
+        Object val = service.findByOwner("1");
+        return new ViewJSONWrapper(val);
+    }
 }
