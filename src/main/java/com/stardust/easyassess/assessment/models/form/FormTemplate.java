@@ -1,14 +1,21 @@
 package com.stardust.easyassess.assessment.models.form;
 
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+
 import java.util.List;
 
+@Document(collection = "templates")
 public class FormTemplate extends FormElement {
-	
-	protected String guid;
 
-	protected FormHeader header;
-	
-	protected List<GroupSection> groups;
+	@Id
+	private String id;
+
+	private String guid;
+
+	private FormHeader header;
+
+	private List<GroupSection> groups;
 	
 	public String getGuid() {
 		return guid;
@@ -36,5 +43,13 @@ public class FormTemplate extends FormElement {
 
 	public void setGroups(List<GroupSection> groups) {
 		this.groups = groups;
+	}
+
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
 	}
 }

@@ -1,37 +1,28 @@
-package com.stardust.easyassess.assessment.dao.repository;
+package com.stardust.easyassess.assessment.dao.repositories;
 
 import com.stardust.easyassess.assessment.common.PredicateQueryProvider;
+import com.stardust.easyassess.assessment.models.form.FormTemplate;
 import com.stardust.easyassess.core.query.Selection;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.data.repository.PagingAndSortingRepository;
+import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.data.repository.NoRepositoryBean;
 
-import javax.persistence.criteria.Path;
-import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.*;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+@NoRepositoryBean
+public interface DataRepository<T, ID extends Serializable> extends MongoRepository<T, ID> {
 
-public interface DataRepository<T> extends PagingAndSortingRepository<T, String> {
+    Page<T> findAllBy(Specification<?> T, Pageable pageable);
 
-    Page<T> findAll(Specification<T> spec, Pageable pageable);
+    default Page<T> findAllBy(Pageable page, List<Selection> selections) {
 
-    List<T> findAll(Specification<T> spec);
-
-    T findOne(Specification<T> spec);
-
-    default Page<T> findAll(Pageable page, String field, String value) {
-        return this.findAll((root, query, cb) -> {
-            Path<String> namePath = root.get(field);
-            query.where(cb.equal(namePath, value));
-            return query.getRestriction();
-        }, page);
-    }
-
-    default Page<T> findAll(Pageable page, List<Selection> selections) {
-
-        return this.findAll((root, query, cb) -> {
+        return this.findAllBy((root, query, cb) -> {
             PredicateQueryProvider pqp = new PredicateQueryProvider(root, cb);
 
             List<Predicate> predicates = new ArrayList<Predicate>();
@@ -50,5 +41,6 @@ public interface DataRepository<T> extends PagingAndSortingRepository<T, String>
             query.where(predicates.toArray(new Predicate[selections.size()]));
             return query.getRestriction();
         }, page);
+
     }
 }

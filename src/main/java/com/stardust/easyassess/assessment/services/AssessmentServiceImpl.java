@@ -1,7 +1,7 @@
 package com.stardust.easyassess.assessment.services;
 
-import com.stardust.easyassess.assessment.dao.repository.AssessmentRepository;
-import com.stardust.easyassess.assessment.dao.repository.FormRepository;
+import com.stardust.easyassess.assessment.dao.repositories.AssessmentRepository;
+import com.stardust.easyassess.assessment.dao.repositories.FormRepository;
 import com.stardust.easyassess.assessment.models.Assessment;
 import com.stardust.easyassess.assessment.models.form.Form;
 import org.springframework.beans.factory.annotation.Autowired;
