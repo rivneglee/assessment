@@ -22,6 +22,8 @@ public interface DataRepository<T, ID extends Serializable> extends MongoReposit
 
     default Page<T> findAllBy(Pageable page, List<Selection> selections) {
 
+        int a =0;
+
         return this.findAllBy((root, query, cb) -> {
             PredicateQueryProvider pqp = new PredicateQueryProvider(root, cb);
 

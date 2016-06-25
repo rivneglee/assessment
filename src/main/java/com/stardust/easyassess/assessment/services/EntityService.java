@@ -1,42 +1,20 @@
 package com.stardust.easyassess.assessment.services;
 
-import com.stardust.easyassess.assessment.dao.repositories.DataRepository;
 import com.stardust.easyassess.core.query.Selection;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 
-import java.util.ArrayList;
 import java.util.List;
 
-public abstract class EntityService<T> {
+public interface EntityService<T> {
+    T get(String id);
 
-    protected abstract DataRepository<T, String> getRepository();
+    Page<T> list(int page, int size, String sortBy);
 
-    public T get(String id) {
-        return getRepository().findOne(id);
-    }
+    Page<T> list(int page, int size, String sortBy, List<Selection> selections);
 
-    public Page<T> list(int page, int size, String sortBy) {
-        return list(page, size, sortBy, new ArrayList<Selection>());
-    }
+    T save(T model);
 
-    public Page<T> list(int page, int size, String sortBy, List<Selection> selections) {
-        Sort sort = new Sort(Sort.Direction.ASC, sortBy);
-        Pageable pageable = new PageRequest(page, size, sort);
-        return getRepository().findAllBy(pageable, selections);
-    }
+    void remove(T model);
 
-    public T save(T model) {
-        return getRepository().save(model);
-    }
-
-    public void remove(T model) {
-        getRepository().delete(model);
-    }
-
-    public void remove(String id) {
-        getRepository().delete(id);
-    }
+    void remove(String id);
 }

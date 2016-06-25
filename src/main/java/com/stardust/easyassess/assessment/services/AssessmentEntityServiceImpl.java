@@ -1,6 +1,7 @@
 package com.stardust.easyassess.assessment.services;
 
 import com.stardust.easyassess.assessment.dao.repositories.AssessmentRepository;
+import com.stardust.easyassess.assessment.dao.repositories.DataRepository;
 import com.stardust.easyassess.assessment.dao.repositories.FormRepository;
 import com.stardust.easyassess.assessment.models.Assessment;
 import com.stardust.easyassess.assessment.models.form.Form;
@@ -15,7 +16,7 @@ import java.util.UUID;
 
 @Service
 @Scope("request")
-public class AssessmentServiceImpl implements AssessmentService {
+public class AssessmentEntityServiceImpl extends AbstractEntityService<Assessment> implements AssessmentService {
 
     @Autowired
     AssessmentRepository assessmentRepository;
@@ -23,8 +24,9 @@ public class AssessmentServiceImpl implements AssessmentService {
     @Autowired
     FormRepository formRepository;
 
+    @Override
     @Transactional
-    public void create(Assessment assessment) {
+    public void createAssessment(Assessment assessment) {
         assessment.setStatus("A");
         assessment.setId(UUID.randomUUID().toString());
 
@@ -37,17 +39,11 @@ public class AssessmentServiceImpl implements AssessmentService {
             assessment.getForms().add(form);
             formRepository.save(form);
         }
-
         assessmentRepository.save(assessment);
     }
 
     @Override
-    public List<Assessment> findByOwner(String owner) {
-        return assessmentRepository.findAssessmentsByOwner(owner);
-    }
-
-    @Override
-    public List<Form> findFormsByAssessment(String id) {
-        return formRepository.findFormsByAssessmentId(id);
+    protected DataRepository getRepository() {
+        return assessmentRepository;
     }
 }
