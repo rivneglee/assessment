@@ -1,48 +1,71 @@
 package com.stardust.easyassess.assessment.dao.repositories;
 
-import com.stardust.easyassess.assessment.common.PredicateQueryProvider;
-import com.stardust.easyassess.assessment.models.form.FormTemplate;
+import com.stardust.easyassess.assessment.common.QueryCriteriaProvider;
+import com.stardust.easyassess.assessment.dao.MongoTemplateFactory;
 import com.stardust.easyassess.core.query.Selection;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.jpa.domain.Specification;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.repository.NoRepositoryBean;
 
-import javax.persistence.criteria.*;
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 
 @NoRepositoryBean
 public interface DataRepository<T, ID extends Serializable> extends MongoRepository<T, ID> {
-
-    Page<T> findAllBy(Specification<?> T, Pageable pageable);
+    Class<T> getEntityClass();
 
     default Page<T> findAllBy(Pageable page, List<Selection> selections) {
+        Query query = new Query();
+        Criteria criteria = new Criteria();
+        QueryCriteriaProvider qcp = new QueryCriteriaProvider(criteria);
 
-        int a =0;
+        //criteria.and("name").regex(".*?"+"POST"+".*");
+        for (Selection selection : selections) {
+            if (selection.getProperty() == null
+                    || selection.getProperty().isEmpty()) continue;
+            if (!selection.getOperator().equals(Selection.Operator.IS_NULL) && (selection.getValue() == null
+                    || selection.getValue().toString().isEmpty())) continue;
 
-        return this.findAllBy((root, query, cb) -> {
-            PredicateQueryProvider pqp = new PredicateQueryProvider(root, cb);
+            criteria = qcp.toQueryObject(selection);
+        }
 
-            List<Predicate> predicates = new ArrayList<Predicate>();
+        query.with(page.getSort());
+        query.addCriteria(criteria);
+        Long count =  MongoTemplateFactory.get().count(query, getEntityClass());
+        List<T> list = MongoTemplateFactory.get().find(query.with(page), getEntityClass());
+        Page<T> pagelist = new PageImpl<T>(list, page, count);
+        return pagelist;
 
-            predicates.add(cb.greaterThan(root.get("id"), 0));
-
-            for (Selection selection : selections) {
-                if (selection.getProperty() == null
-                        || selection.getProperty().isEmpty()) continue;
-                if (!selection.getOperator().equals(Selection.Operator.IS_NULL) && (selection.getValue() == null
-                        || selection.getValue().toString().isEmpty())) continue;
-
-                predicates.add(pqp.toQueryObject(selection));
-            }
-
-            query.where(predicates.toArray(new Predicate[selections.size()]));
-            return query.getRestriction();
-        }, page);
+//        int a =0;
+//
+//        return this.findAllBy(new Specification(){
+//            @Override
+//            public Predicate toPredicate(Root root, CriteriaQuery query, CriteriaBuilder cb) {
+//                QueryCriteriaProvider pqp = new QueryCriteriaProvider(root, cb);
+//
+//                List<Predicate> predicates = new ArrayList<Predicate>();
+//
+//                predicates.add(cb.greaterThan(root.get("id"), 0));
+//
+//                for (Selection selection : selections) {
+//                    if (selection.getProperty() == null
+//                            || selection.getProperty().isEmpty()) continue;
+//                    if (!selection.getOperator().equals(Selection.Operator.IS_NULL) && (selection.getValue() == null
+//                            || selection.getValue().toString().isEmpty())) continue;
+//
+//                    predicates.add(pqp.toQueryObject(selection));
+//                }
+//
+//                query.where(predicates.toArray(new Predicate[selections.size()]));
+//                return query.getRestriction();
+//            }
+//
+//
+//        }, page);
 
     }
 }
