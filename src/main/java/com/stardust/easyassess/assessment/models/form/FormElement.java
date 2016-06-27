@@ -1,6 +1,8 @@
 package com.stardust.easyassess.assessment.models.form;
 
 
-public class FormElement {
+import com.stardust.easyassess.assessment.models.DataModel;
+
+public class FormElement extends DataModel {
 
 }

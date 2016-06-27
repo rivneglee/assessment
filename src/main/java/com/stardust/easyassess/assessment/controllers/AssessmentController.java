@@ -4,7 +4,6 @@ package com.stardust.easyassess.assessment.controllers;
 import com.stardust.easyassess.assessment.models.Assessment;
 import com.stardust.easyassess.assessment.services.AssessmentService;
 import com.stardust.easyassess.assessment.services.EntityService;
-import com.stardust.easyassess.assessment.services.FormTemplateService;
 import com.stardust.easyassess.core.presentation.ViewJSONWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
@@ -20,11 +19,16 @@ public class AssessmentController extends MaintenanceController<Assessment> {
     @Autowired
     protected ApplicationContext applicationContext;
 
+    @Override
     @ResponseBody
     @RequestMapping(method={RequestMethod.POST})
-    public ViewJSONWrapper create(@RequestBody Assessment assessment) {
-        ((AssessmentService)getService()).createAssessment(assessment);
-        return new ViewJSONWrapper(assessment);
+    public ViewJSONWrapper add(@RequestBody Assessment model) {
+        if (preAdd(model)) {
+            ((AssessmentService)getService()).createAssessment(model);
+            return postAdd(getService().save(model));
+        } else {
+            return createEmptyResult();
+        }
     }
 
     @Override

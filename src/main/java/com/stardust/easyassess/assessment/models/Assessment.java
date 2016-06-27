@@ -11,7 +11,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import java.util.*;
 
 @Document(collection = "assessments")
-public class Assessment {
+public class Assessment extends DataModel {
     @Id
     private String id;
     private String name;

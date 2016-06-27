@@ -7,7 +7,7 @@ public class GroupRow extends FormElement {
 	
 	private String guid;
 	
-	private String subject;
+	private TestSubject item;
 	
 	private Map<String, ExpectionOption> optionMap = new HashMap<String, ExpectionOption>();
 
@@ -19,12 +19,12 @@ public class GroupRow extends FormElement {
 		this.guid = guid;
 	}
 
-	public String getSubject() {
-		return subject;
+	public TestSubject getItem() {
+		return item;
 	}
 
-	public void setSubject(String subject) {
-		this.subject = subject;
+	public void setItem(TestSubject item) {
+		this.item = item;
 	}
 
 	public Map<String, ExpectionOption> getOptionMap() {

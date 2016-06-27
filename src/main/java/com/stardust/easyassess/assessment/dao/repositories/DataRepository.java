@@ -23,7 +23,6 @@ public interface DataRepository<T, ID extends Serializable> extends MongoReposit
         Criteria criteria = new Criteria();
         QueryCriteriaProvider qcp = new QueryCriteriaProvider(criteria);
 
-        //criteria.and("name").regex(".*?"+"POST"+".*");
         for (Selection selection : selections) {
             if (selection.getProperty() == null
                     || selection.getProperty().isEmpty()) continue;
@@ -39,33 +38,5 @@ public interface DataRepository<T, ID extends Serializable> extends MongoReposit
         List<T> list = MongoTemplateFactory.get().find(query.with(page), getEntityClass());
         Page<T> pagelist = new PageImpl<T>(list, page, count);
         return pagelist;
-
-//        int a =0;
-//
-//        return this.findAllBy(new Specification(){
-//            @Override
-//            public Predicate toPredicate(Root root, CriteriaQuery query, CriteriaBuilder cb) {
-//                QueryCriteriaProvider pqp = new QueryCriteriaProvider(root, cb);
-//
-//                List<Predicate> predicates = new ArrayList<Predicate>();
-//
-//                predicates.add(cb.greaterThan(root.get("id"), 0));
-//
-//                for (Selection selection : selections) {
-//                    if (selection.getProperty() == null
-//                            || selection.getProperty().isEmpty()) continue;
-//                    if (!selection.getOperator().equals(Selection.Operator.IS_NULL) && (selection.getValue() == null
-//                            || selection.getValue().toString().isEmpty())) continue;
-//
-//                    predicates.add(pqp.toQueryObject(selection));
-//                }
-//
-//                query.where(predicates.toArray(new Predicate[selections.size()]));
-//                return query.getRestriction();
-//            }
-//
-//
-//        }, page);
-
     }
 }

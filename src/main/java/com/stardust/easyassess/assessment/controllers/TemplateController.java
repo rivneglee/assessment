@@ -12,14 +12,6 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping({"{domain}/assess/template"})
 @EnableAutoConfiguration
 public class TemplateController extends MaintenanceController<FormTemplate> {
-
-    @ResponseBody
-    @RequestMapping(method = {RequestMethod.POST})
-    public ViewJSONWrapper save(@RequestBody FormTemplate template) {
-        getService().save(template);
-        return new ViewJSONWrapper(template);
-    }
-
     @Override
     protected EntityService<FormTemplate> getService() {
         return applicationContext.getBean(FormTemplateService.class);
