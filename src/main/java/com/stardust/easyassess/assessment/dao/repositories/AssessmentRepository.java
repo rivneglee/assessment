@@ -12,6 +12,6 @@ public interface AssessmentRepository extends DataRepository<Assessment, String>
 
     List<Assessment> findAssessmentsByOwner(String owner);
 
-    @Query("\"{participants.?0\":{$exists:true}}")
-    List<Assessment> findByParticipant(String participant);
+    @Query("{participants.?0:{$exists:true}}")
+    List<Assessment> findByParticipant(Long participant);
 }

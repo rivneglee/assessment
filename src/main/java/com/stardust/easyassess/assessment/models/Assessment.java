@@ -8,6 +8,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import javax.persistence.Embedded;
 import java.util.*;
 
 @Document(collection = "assessments")
@@ -21,8 +22,10 @@ public class Assessment extends DataModel {
     private Date endDate;
     private String owner;
     private String status;
+    @Embedded
     private Map<String, String> participants;
     private String templateGuid;
+    @Embedded
     private Map<String, List<String>> specimenCodes = new HashedMap();
 
     @DBRef

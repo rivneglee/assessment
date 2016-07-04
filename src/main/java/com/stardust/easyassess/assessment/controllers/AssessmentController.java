@@ -52,7 +52,7 @@ public class AssessmentController extends MaintenanceController<Assessment> {
         selections.add(new Selection(field, Selection.Operator.LIKE, value));
         selections.add(new Selection("status", Selection.Operator.EQUAL, "A"));
         selections.add(new Selection("participants.22", Selection.Operator.EXSITS, true));
-        //return new ViewJSONWrapper(((AssessmentService)this.getService()).findByParticipant("22"));
-        return new ViewJSONWrapper(getService().list(page, size , sort, selections));
+        return new ViewJSONWrapper(((AssessmentService)this.getService()).findByParticipant("22"));
+        //return new ViewJSONWrapper(getService().list(page, size , sort, selections));
     }
 }

@@ -44,7 +44,7 @@ public class AssessmentEntityServiceImpl extends AbstractEntityService<Assessmen
 
     @Override
     public List<Assessment> findByParticipant(String participant) {
-        return assessmentRepository.findByParticipant(participant);
+        return assessmentRepository.findByParticipant(Long.parseLong(participant));
     }
 
 
