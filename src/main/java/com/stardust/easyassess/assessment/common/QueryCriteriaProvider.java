@@ -6,7 +6,7 @@ import com.stardust.easyassess.core.query.SelectionQueryProvider;
 import org.springframework.data.mongodb.core.query.Criteria;
 
 public class QueryCriteriaProvider implements SelectionQueryProvider<Criteria> {
-    private final Criteria criteria;
+    private Criteria criteria;
 
     public QueryCriteriaProvider(Criteria criteria) {
         this.criteria = criteria;
@@ -37,16 +37,32 @@ public class QueryCriteriaProvider implements SelectionQueryProvider<Criteria> {
             case IS_NULL:
                 joinCriteria.is(null);
                 break;
+            case NOT_NULL:
+                joinCriteria.is(null).not();
+                break;
+            case EXSITS:
+                joinCriteria.exists((Boolean) selection.getValue());
+                break;
             case EQUAL:
             default:
                 joinCriteria.is(selection.getValue());
                 break;
         }
 
-        if (selection.getOperand().equals(Selection.Operand.OR)) {
-            criteria.orOperator(joinCriteria);
+        if (criteria.getCriteriaObject().keySet().isEmpty()) {
+            if (selection.getOperand().equals(Selection.Operand.OR)) {
+                criteria.orOperator(joinCriteria);
+            } else {
+                criteria.andOperator(joinCriteria);
+            }
         } else {
-            criteria.andOperator(joinCriteria);
+            Criteria criteriaChain = new Criteria();
+            if (selection.getOperand().equals(Selection.Operand.OR)) {
+                criteriaChain.orOperator(criteria, joinCriteria);
+            } else {
+                criteriaChain.andOperator(criteria, joinCriteria);
+            }
+            criteria = criteriaChain;
         }
 
         return criteria;
