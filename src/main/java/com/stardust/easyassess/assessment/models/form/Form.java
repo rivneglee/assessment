@@ -1,5 +1,6 @@
 package com.stardust.easyassess.assessment.models.form;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.stardust.easyassess.assessment.models.Assessment;
 import org.springframework.data.annotation.Id;
@@ -7,6 +8,7 @@ import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Document(collection = "forms")
@@ -20,6 +22,13 @@ public class Form extends FormElement {
     private Assessment assessment;
 
     private String owner;
+
+    private String status;
+
+    private String formName;
+
+    @JsonFormat(pattern="yyyy-MM-dd")
+    private Date submitDate;
 
     private List<ActualValue> values = new ArrayList<ActualValue>();
 
@@ -53,6 +62,34 @@ public class Form extends FormElement {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public String getOwnerName() {
+        return assessment.getParticipants().get(this.getOwner());
+    }
+
+    public String getFormName() {
+        return formName;
+    }
+
+    public void setFormName(String formName) {
+        this.formName = formName;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public Date getSubmitDate() {
+        return submitDate;
+    }
+
+    public void setSubmitDate(Date submitDate) {
+        this.submitDate = submitDate;
     }
 }
 

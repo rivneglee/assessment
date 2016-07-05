@@ -22,6 +22,7 @@ public class Assessment extends DataModel {
     private Date endDate;
     private String owner;
     private String status;
+
     @Embedded
     private Map<String, String> participants;
     private String templateGuid;

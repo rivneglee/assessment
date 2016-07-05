@@ -16,7 +16,9 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 public abstract class MaintenanceController<T> {
@@ -46,6 +48,16 @@ public abstract class MaintenanceController<T> {
     }
 
     protected abstract EntityService<T> getService();
+
+    protected Map<String, Object> getUserProfile() {
+        Map<String, Object> profile = (Map<String, Object>)getSession().get("userProfile");
+        if (profile == null) {
+            profile = new HashMap<String, Object>();
+        }
+
+        return profile;
+    }
+
 
     @RequestMapping(path="/list",
             method={RequestMethod.GET})
