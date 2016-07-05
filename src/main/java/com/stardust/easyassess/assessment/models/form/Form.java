@@ -27,6 +27,8 @@ public class Form extends FormElement {
 
     private String formName;
 
+    private Double totalScore;
+
     @JsonFormat(pattern="yyyy-MM-dd")
     private Date submitDate;
 
@@ -90,6 +92,14 @@ public class Form extends FormElement {
 
     public void setSubmitDate(Date submitDate) {
         this.submitDate = submitDate;
+    }
+
+    public Double getTotalScore() {
+        return totalScore;
+    }
+
+    public void setTotalScore(Double totalScore) {
+        this.totalScore = totalScore;
     }
 }
 
