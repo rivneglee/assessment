@@ -14,10 +14,7 @@ import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.ApplicationContext;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 
 @CrossOrigin("*")
@@ -37,8 +34,10 @@ public class FormController extends MaintenanceController<Form> {
             method={RequestMethod.PUT})
     public ViewJSONWrapper submit(@PathVariable String id, @RequestBody List<ActualValue> values) {
         Form form = getOwnerFormById(id);
-        if (form != null) {
+        if (form != null && form.getStatus().equals("A")) {
             form.setValues(values);
+            form.setStatus("C");
+            form.setSubmitDate(new Date());
             getService().save(form);
         }
         return new ViewJSONWrapper(form);
