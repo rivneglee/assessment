@@ -12,12 +12,6 @@ import java.util.List;
 
 public interface AssessmentService extends EntityService<Assessment> {
      void createAssessment(Assessment assessment);
-
      List<Assessment> findByParticipant(String participant);
-
-     Form findForm(String id);
-
      Specimen findSpecimen(String assessmentId, String specimenCode);
-
-     Form updateFormActualValues(String id, List<ActualValue> values);
 }

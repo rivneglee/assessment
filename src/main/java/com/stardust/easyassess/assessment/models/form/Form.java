@@ -74,6 +74,18 @@ public class Form extends FormElement {
         return assessment.getParticipants().get(this.getOwner());
     }
 
+    public String getAssessmentOwner() {
+        return assessment.getOwner();
+    }
+
+    public String getAssessmentOwnerName() {
+        return assessment.getOwnerName();
+    }
+
+    public String getTemplateId() {
+        return assessment.getTemplateGuid();
+    }
+
     public String getFormName() {
         return formName;
     }

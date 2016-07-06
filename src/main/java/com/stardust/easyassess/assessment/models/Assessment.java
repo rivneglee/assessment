@@ -21,6 +21,7 @@ public class Assessment extends DataModel {
     @JsonFormat(pattern="yyyy-MM-dd")
     private Date endDate;
     private String owner;
+    private String ownerName;
     private String status;
 
     @Embedded
@@ -31,6 +32,14 @@ public class Assessment extends DataModel {
 
     @DBRef
     private List<Form> forms = new ArrayList<Form>();
+
+    public String getOwnerName() {
+        return ownerName;
+    }
+
+    public void setOwnerName(String ownerName) {
+        this.ownerName = ownerName;
+    }
 
     public Date getStartDate() {
         return startDate;

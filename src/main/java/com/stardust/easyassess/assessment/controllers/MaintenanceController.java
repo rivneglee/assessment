@@ -2,6 +2,7 @@ package com.stardust.easyassess.assessment.controllers;
 
 
 import com.stardust.easyassess.assessment.models.DataModel;
+import com.stardust.easyassess.assessment.models.Owner;
 import com.stardust.easyassess.assessment.services.EntityService;
 import com.stardust.easyassess.core.context.ContextSession;
 import com.stardust.easyassess.core.presentation.Message;
@@ -48,6 +49,19 @@ public abstract class MaintenanceController<T> {
     }
 
     protected abstract EntityService<T> getService();
+
+    protected Owner getOwner() {
+        List<Long> ministries = (List<Long>)getUserProfile().get("ministries");
+        Map<Long, String> ministryMap = (Map<Long, String>)getUserProfile().get("ministryMap");
+        Owner owner = null;
+        if (ministries != null && ministries.size() > 0 && ministryMap != null) {
+            String id = ministries.get(0).toString();
+            String name = ministryMap.get(id);
+            owner = new Owner(id, name);
+
+        }
+        return owner;
+    }
 
     protected Map<String, Object> getUserProfile() {
         Map<String, Object> profile = (Map<String, Object>)getSession().get("userProfile");
