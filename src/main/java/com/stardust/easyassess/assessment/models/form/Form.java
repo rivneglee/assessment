@@ -74,16 +74,17 @@ public class Form extends FormElement {
         return assessment.getParticipants().get(this.getOwner());
     }
 
-    public String getAssessmentOwner() {
-        return assessment.getOwner();
-    }
-
-    public String getAssessmentOwnerName() {
-        return assessment.getOwnerName();
-    }
-
-    public String getTemplateId() {
-        return assessment.getTemplateGuid();
+    public Assessment getSecuredAssessment() {
+        Assessment assessment = new Assessment();
+        assessment.setId(this.assessment.getId());
+        assessment.setName(this.assessment.getName());
+        assessment.setStartDate(this.assessment.getStartDate());
+        assessment.setEndDate(this.assessment.getEndDate());
+        assessment.setStatus(this.assessment.getStatus());
+        assessment.setTemplateGuid(this.assessment.getTemplateGuid());
+        assessment.setOwner(this.assessment.getOwner());
+        assessment.setOwnerName(this.assessment.getOwnerName());
+        return assessment;
     }
 
     public String getFormName() {
