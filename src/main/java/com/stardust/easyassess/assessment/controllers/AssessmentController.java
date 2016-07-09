@@ -38,6 +38,15 @@ public class AssessmentController extends MaintenanceController<Assessment> {
     }
 
     @Override
+    protected boolean preList(List<Selection> selections) {
+        Owner owner = getOwner();
+        if (owner != null && owner.getId() != null && !owner.getId().isEmpty()) {
+            selections.add(new Selection("owner", Selection.Operator.EQUAL, owner.getId()));
+        }
+        return true;
+    }
+
+    @Override
     protected boolean preAdd(Assessment model) {
         Owner owner = getOwner();
         model.setOwner(owner.getId());

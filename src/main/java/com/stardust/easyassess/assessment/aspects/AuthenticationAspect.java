@@ -1,14 +1,27 @@
 package com.stardust.easyassess.assessment.aspects;
 
 
+import com.stardust.easyassess.assessment.controllers.MaintenanceController;
 import com.stardust.easyassess.core.context.ContextSession;
+import com.stardust.easyassess.core.exception.InvalidSessionException;
+import com.stardust.easyassess.core.presentation.Message;
+import com.stardust.easyassess.core.presentation.ResultCode;
+import com.stardust.easyassess.core.presentation.ViewJSONWrapper;
 import org.apache.log4j.Logger;
 import org.aspectj.lang.JoinPoint;
+import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
+import org.springframework.web.context.request.RequestAttributes;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 @Aspect
 @Component
@@ -26,30 +39,21 @@ public class AuthenticationAspect {
     public void controllerRequest() {
     }
 
-
     @Before("controllerRequest()")
     public void doBefore(JoinPoint joinPoint) throws Throwable  {
-          ContextSession session = applicationContext.getBean(ContextSession.class);
 
-//        RequestAttributes ra = RequestContextHolder.getRequestAttributes();
-//        ServletRequestAttributes sra = (ServletRequestAttributes) ra;
-//        HttpServletRequest request = sra.getRequest();
-//
-//        String method = request.getMethod();
-//        String uri = request.getRequestURI();
-//
-//        ContextSession session = applicationContext.getBean(ContextSession.class);
-//        User user = (User)session.get("currentUser", null);
-//        List<RolePermissions> rolePermissionses
-//                = (List<RolePermissions>)
-//                    session.get("authentication", new ArrayList<RolePermissions>());
-//
-//        if (user == null || user.getId() <=0) {
-//            //throw new Exception("无效的会话,请重新登录");
-//        }
+    }
 
-        //authenticationProxy.isPermitted(uri, method, user.getRoles());
-
+    @Around("controllerRequest()")
+    public Object aroundControllerRequest(ProceedingJoinPoint pjp) throws Throwable {
+        Object result = null;
+        ContextSession session = applicationContext.getBean(ContextSession.class);
+        if (session.get("userProfile") == null) {
+            result = new ViewJSONWrapper(new Message("503"), ResultCode.FAILED);
+        } else {
+            result = pjp.proceed();
+        }
+        return result;
     }
 
     @After("controllerRequest()")

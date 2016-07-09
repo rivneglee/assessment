@@ -83,7 +83,11 @@ public abstract class MaintenanceController<T> {
 
         List<Selection> selections = new ArrayList<Selection>();
         selections.add(new Selection(field, Selection.Operator.LIKE, value));
-        return new ViewJSONWrapper(getService().list(page, size , sort, selections));
+        if (preList(selections)) {
+            return postList(getService().list(page, size , sort, selections));
+        } else {
+            return createEmptyResult();
+        }
     }
 
     @RequestMapping(value = "/{id}",
