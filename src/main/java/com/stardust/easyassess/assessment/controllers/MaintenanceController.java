@@ -56,7 +56,7 @@ public abstract class MaintenanceController<T> {
         Owner owner = null;
         if (ministries != null && ministries.size() > 0 && ministryMap != null) {
             String id = ministries.get(0).toString();
-            String name = ministryMap.get(id);
+            String name = ministryMap.get(new Long(id));
             owner = new Owner(id, name);
 
         }
