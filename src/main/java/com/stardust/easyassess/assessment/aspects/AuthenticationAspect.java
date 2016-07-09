@@ -49,6 +49,8 @@ public class AuthenticationAspect {
         Object result = null;
         ContextSession session = applicationContext.getBean(ContextSession.class);
         if (session.get("userProfile") == null) {
+            session.clear();
+            clearCookie();
             result = new ViewJSONWrapper(new Message("503"), ResultCode.FAILED);
         } else {
             result = pjp.proceed();
@@ -64,5 +66,14 @@ public class AuthenticationAspect {
     @AfterThrowing(pointcut = "controllerRequest()", throwing = "e")
     public void doAfterThrowing(JoinPoint joinPoint, Throwable e) throws Throwable {
 
+    }
+
+    private void clearCookie() {
+        RequestAttributes ra = RequestContextHolder.getRequestAttributes();
+        ServletRequestAttributes sra = (ServletRequestAttributes) ra;
+        HttpServletResponse response = sra.getResponse();
+        Cookie cookie = new Cookie("SESSION", null);
+        cookie.setMaxAge(0);
+        response.addCookie(cookie);
     }
 }
