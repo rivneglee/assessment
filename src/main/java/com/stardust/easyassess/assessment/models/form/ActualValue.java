@@ -3,10 +3,19 @@ package com.stardust.easyassess.assessment.models.form;
 
 public class ActualValue {
     private String specimenCode;
+    private String specimenNumber;
     private String specimenGuid;
     private String subjectCode;
     private String subjectGuid;
     private String value;
+
+    public String getSpecimenNumber() {
+        return specimenNumber;
+    }
+
+    public void setSpecimenNumber(String specimenNumber) {
+        this.specimenNumber = specimenNumber;
+    }
 
     public String getSpecimenCode() {
         return specimenCode;

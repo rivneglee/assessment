@@ -34,12 +34,7 @@ public class FormController extends MaintenanceController<Form> {
             method={RequestMethod.PUT})
     public ViewJSONWrapper submit(@PathVariable String id, @RequestBody List<ActualValue> values) {
         Form form = getOwnerFormById(id);
-        if (form != null && form.getStatus().equals("A")) {
-            form.setValues(values);
-            form.setStatus("C");
-            form.setSubmitDate(new Date());
-            getService().save(form);
-        }
+        ((FormService)getService()).submit(form, values);
         return new ViewJSONWrapper(form);
     }
 

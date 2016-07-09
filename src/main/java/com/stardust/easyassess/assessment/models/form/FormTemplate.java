@@ -16,7 +16,7 @@ public class FormTemplate extends FormElement {
 	private FormHeader header;
 
 	private List<GroupSection> groups;
-	
+
 	public String getGuid() {
 		return guid;
 	}
