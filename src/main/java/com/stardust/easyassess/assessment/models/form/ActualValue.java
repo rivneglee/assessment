@@ -5,7 +5,7 @@ public class ActualValue {
     private String specimenCode;
     private String specimenNumber;
     private String specimenGuid;
-    private String subjectCode;
+    private TestSubject subject;
     private String subjectGuid;
     private String value;
 
@@ -33,12 +33,12 @@ public class ActualValue {
         this.specimenGuid = specimenGuid;
     }
 
-    public String getSubjectCode() {
-        return subjectCode;
+    public TestSubject getSubject() {
+        return subject;
     }
 
-    public void setSubjectCode(String subjectCode) {
-        this.subjectCode = subjectCode;
+    public void setSubject(TestSubject subject) {
+        this.subject = subject;
     }
 
     public String getSubjectGuid() {

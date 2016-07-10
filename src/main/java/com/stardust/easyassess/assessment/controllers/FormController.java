@@ -3,7 +3,9 @@ package com.stardust.easyassess.assessment.controllers;
 
 import com.stardust.easyassess.assessment.models.Owner;
 import com.stardust.easyassess.assessment.models.form.ActualValue;
+import com.stardust.easyassess.assessment.models.form.Code;
 import com.stardust.easyassess.assessment.models.form.Form;
+import com.stardust.easyassess.assessment.models.form.FormData;
 import com.stardust.easyassess.assessment.services.EntityService;
 import com.stardust.easyassess.assessment.services.FormService;
 import com.stardust.easyassess.assessment.services.FormTemplateService;
@@ -30,11 +32,13 @@ public class FormController extends MaintenanceController<Form> {
         return getApplicationContext().getBean(FormService.class);
     }
 
-    @RequestMapping(path="/values/{id}",
+    @RequestMapping(path="/submit/{id}",
             method={RequestMethod.PUT})
-    public ViewJSONWrapper submit(@PathVariable String id, @RequestBody List<ActualValue> values) {
+    public ViewJSONWrapper submit(@PathVariable String id, @RequestBody FormData data) {
         Form form = getOwnerFormById(id);
-        ((FormService)getService()).submit(form, values);
+        form.setValues(data.getValues());
+        form.setCodes(data.getCodes());
+        ((FormService)getService()).submit(form);
         return new ViewJSONWrapper(form);
     }
 

@@ -30,14 +30,13 @@ public class FormServiceImpl extends AbstractEntityService<Form> implements Form
 
     @Transactional
     @Override
-    public Form submit(Form form, List<ActualValue> values) {
+    public Form submit(Form form) {
         if (form != null && form.getStatus().equals("A")) {
 
             FormTemplate template = templateRepository.findOne(form.getAssessment().getTemplateGuid());
-            form.setValues(values);
             form.setStatus("C");
             Map<String, List<String>> codeMap = form.getAssessment().getSpecimenCodes();
-            for (ActualValue value : values) {
+            for (ActualValue value : form.getValues()) {
                 for (String specimenNumber : codeMap.keySet()) {
                     for (String specimenCode : codeMap.get(specimenNumber)) {
                         if (specimenCode.equals(value.getSpecimenCode())) {
@@ -51,6 +50,11 @@ public class FormServiceImpl extends AbstractEntityService<Form> implements Form
                             for (Specimen specimen : group.getSpecimens()) {
                                 if (specimen.getNumber().equals(value.getSpecimenNumber())) {
                                     value.setSpecimenGuid(specimen.getGuid());
+                                }
+                            }
+                            for (GroupRow row : group.getRows()) {
+                                if (row.getGuid().equals(value.getSubjectGuid())) {
+                                    value.setSubject(row.getItem());
                                 }
                             }
                         }

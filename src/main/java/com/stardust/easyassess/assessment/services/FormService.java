@@ -8,5 +8,5 @@ import java.util.List;
 
 
 public interface FormService extends EntityService<Form> {
-    Form submit(Form form, List<ActualValue> values);
+    Form submit(Form form);
 }

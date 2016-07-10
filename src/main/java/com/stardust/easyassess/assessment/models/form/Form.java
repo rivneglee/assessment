@@ -34,6 +34,8 @@ public class Form extends FormElement {
 
     private List<ActualValue> values = new ArrayList<ActualValue>();
 
+    private List<Code> codes = new ArrayList();
+
     public String getOwner() {
         return owner;
     }
@@ -48,6 +50,14 @@ public class Form extends FormElement {
 
     public void setValues(List<ActualValue> values) {
         this.values = values;
+    }
+
+    public List<Code> getCodes() {
+        return codes;
+    }
+
+    public void setCodes(List<Code> codes) {
+        this.codes = codes;
     }
 
     public Assessment getAssessment() {
