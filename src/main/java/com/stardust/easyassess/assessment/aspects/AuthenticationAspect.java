@@ -1,13 +1,10 @@
 package com.stardust.easyassess.assessment.aspects;
 
 
-import com.stardust.easyassess.assessment.controllers.MaintenanceController;
 import com.stardust.easyassess.core.context.ContextSession;
-import com.stardust.easyassess.core.exception.InvalidSessionException;
 import com.stardust.easyassess.core.presentation.Message;
 import com.stardust.easyassess.core.presentation.ResultCode;
 import com.stardust.easyassess.core.presentation.ViewJSONWrapper;
-import org.apache.log4j.Logger;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.*;
@@ -20,7 +17,6 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 @Aspect
