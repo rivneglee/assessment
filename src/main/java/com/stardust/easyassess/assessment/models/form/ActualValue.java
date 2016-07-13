@@ -8,6 +8,15 @@ public class ActualValue {
     private TestSubject subject;
     private String subjectGuid;
     private String value;
+    private String valueType;
+
+    public String getValueType() {
+        return valueType;
+    }
+
+    public void setValueType(String valueType) {
+        this.valueType = valueType;
+    }
 
     public String getSpecimenNumber() {
         return specimenNumber;
