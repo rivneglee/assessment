@@ -11,7 +11,13 @@ import org.springframework.data.domain.Page;
 import java.util.List;
 
 public interface AssessmentService extends EntityService<Assessment> {
-     void createAssessment(Assessment assessment);
-     List<Assessment> findByParticipant(String participant);
-     Specimen findSpecimen(String assessmentId, String specimenCode);
+    void createAssessment(Assessment assessment);
+
+    List<Assessment> findByParticipant(String participant);
+
+    Specimen findSpecimen(String assessmentId, String specimenCode);
+
+    Assessment finalizeAssessment(String id);
+
+    void finalizeAssessment(Assessment assessment);
 }

@@ -63,7 +63,7 @@ public class FormController extends MaintenanceController<Form> {
                                          @RequestParam(value = "sort", defaultValue = "id") String sort,
                                          @RequestParam(value = "filterField", defaultValue = "") String field,
                                          @RequestParam(value = "filterValue", defaultValue = "") String value ) {
-        return buildFormList("C", page, size, sort, field, value);
+        return buildFormList("F", page, size, sort, field, value);
     }
 
     @RequestMapping(path="/activated/list",
@@ -73,7 +73,14 @@ public class FormController extends MaintenanceController<Form> {
                                       @RequestParam(value = "sort", defaultValue = "id") String sort,
                                       @RequestParam(value = "filterField", defaultValue = "") String field,
                                       @RequestParam(value = "filterValue", defaultValue = "") String value ) {
-        return buildFormList("A", page, size, sort, field, value);
+
+        List<Selection> selections = new ArrayList();
+        selections.add(new Selection(field, Selection.Operator.LIKE, value));
+        selections.add(new Selection("status", Selection.Operator.NOT_EQUAL, "F"));
+        if (getOwner() != null) {
+            selections.add(new Selection("owner", Selection.Operator.EQUAL, getOwner().getId()));
+        }
+        return new ViewJSONWrapper(getService().list(page, size , sort, selections));
     }
 
     private Form getOwnerFormById(String id) {

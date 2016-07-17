@@ -9,6 +9,15 @@ public class ActualValue {
     private String subjectGuid;
     private String value;
     private String valueType;
+    private Double score;
+
+    public Double getScore() {
+        return score;
+    }
+
+    public void setScore(Double score) {
+        this.score = score;
+    }
 
     public String getValueType() {
         return valueType;

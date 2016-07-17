@@ -10,9 +10,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 @Scope("request")
@@ -81,6 +79,54 @@ public class AssessmentEntityServiceImpl extends AbstractEntityService<Assessmen
         return null;
     }
 
+    @Override
+    public Assessment finalizeAssessment(String id) {
+        Assessment assessment = assessmentRepository.findOne(id);
+        if (assessment != null && assessment.getStatus().equals("A")) {
+            this.finalizeAssessment(assessment);
+        }
+
+        return assessment;
+    }
+
+    @Transactional
+    @Override
+    public void finalizeAssessment(Assessment assessment) {
+        FormTemplate template = formTemplateService.get(assessment.getTemplateGuid());
+
+        Map<String, GroupRow> rowMap = new HashMap();
+
+        for (GroupSection group : template.getGroups()) {
+            for (GroupRow row : group.getRows()) {
+                rowMap.put(row.getGuid(), row);
+            }
+        }
+
+        for (Form form : assessment.getForms()) {
+            for (ActualValue av : form.getValues()) {
+                GroupRow row = rowMap.get(av.getSubjectGuid());
+                if (row != null) {
+                    av.setScore(calculateScore(row.getOptionMap().get(av.getSpecimenGuid()), av));
+                    form.setStatus("F");
+                    formRepository.save(form);
+                }
+            }
+        }
+        assessment.setStatus("F");
+        assessmentRepository.save(assessment);
+    }
+
+    private Double calculateScore(ExpectionOption expectation, ActualValue av) {
+        if (expectation != null) {
+            for (ExpectedValue ev : expectation.getExpectedValues()) {
+                if (ev.getValue().equals(av.getValue())) {
+                    return new Double(ev.getWeight());
+                }
+            }
+        }
+
+        return new Double(0);
+    }
 
     @Override
     protected DataRepository getRepository() {

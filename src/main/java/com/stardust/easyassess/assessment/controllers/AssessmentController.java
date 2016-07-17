@@ -74,6 +74,13 @@ public class AssessmentController extends MaintenanceController<Assessment> {
         return new ViewJSONWrapper(specimen == null ? "":specimen.getGuid());
     }
 
+    @RequestMapping(path="/finalize/{id}",
+            method={RequestMethod.POST})
+    public ViewJSONWrapper finalize(@PathVariable String id) {
+        Assessment result = ((AssessmentService)getService()).finalizeAssessment(id);
+        return new ViewJSONWrapper(result);
+    }
+
     @RequestMapping(path="/mine/activated/list",
             method={RequestMethod.GET})
     public ViewJSONWrapper listActivated(@RequestParam(value = "page", defaultValue = "0") Integer page,
