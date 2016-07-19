@@ -6,6 +6,7 @@ import com.stardust.easyassess.assessment.dao.repositories.FormRepository;
 import com.stardust.easyassess.assessment.models.Assessment;
 import com.stardust.easyassess.assessment.models.form.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,6 +25,9 @@ public class AssessmentEntityServiceImpl extends AbstractEntityService<Assessmen
 
     @Autowired
     FormTemplateService formTemplateService;
+
+    @Autowired
+    ApplicationContext applicationContext;
 
     @Override
     @Transactional
@@ -120,11 +124,9 @@ public class AssessmentEntityServiceImpl extends AbstractEntityService<Assessmen
 
     private Double calculateScore(ExpectionOption expectation, ActualValue av) {
         if (expectation != null) {
-//            for (ExpectedValue ev : expectation.getExpectedValues()) {
-//                if (ev.getValue().equals(av.getValue())) {
-//                    return new Double(ev.getWeight());
-//                }
-//            }
+            Map<String, ScoreCalculator> calculators = (Map<String, ScoreCalculator>)applicationContext.getBean("scoreCalculators");
+            ScoreCalculator calculator = calculators.get(expectation.getType());
+            return calculator.calculate(expectation, av);
         }
 
         return new Double(0);

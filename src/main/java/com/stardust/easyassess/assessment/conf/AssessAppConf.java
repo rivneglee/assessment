@@ -4,8 +4,13 @@ import com.mongodb.Mongo;
 import com.mongodb.MongoClient;
 import com.stardust.easyassess.assessment.dao.router.MultiTenantMongoDbFactory;
 import com.stardust.easyassess.assessment.dao.router.TenantContext;
+import com.stardust.easyassess.assessment.services.GaussianValueScoreCalculator;
+import com.stardust.easyassess.assessment.services.ScoreCalculator;
+import com.stardust.easyassess.assessment.services.SelectionScoreCalculator;
+import com.stardust.easyassess.assessment.services.TargetValueScoreCalculator;
 import com.stardust.easyassess.core.context.ContextSession;
 import com.stardust.easyassess.core.context.ShardedSession;
+import org.apache.commons.collections.map.HashedMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -18,6 +23,7 @@ import org.springframework.web.servlet.HandlerMapping;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.util.HashMap;
 import java.util.Map;
 
 @Configuration
@@ -62,5 +68,14 @@ public class AssessAppConf  {
         TenantContext.setCurrentTenant(domain);
 
         return new ShardedSession(session, domain);
+    }
+
+    @Bean(name="scoreCalculators")
+    public Map<String, ScoreCalculator> getScoreCalculators() {
+        Map<String, ScoreCalculator> calculatorMap = new HashMap();
+        calculatorMap.put("S", new SelectionScoreCalculator());
+        calculatorMap.put("T", new TargetValueScoreCalculator());
+        calculatorMap.put("G", new GaussianValueScoreCalculator());
+        return calculatorMap;
     }
 }
