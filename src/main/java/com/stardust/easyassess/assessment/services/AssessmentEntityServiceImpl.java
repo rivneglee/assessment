@@ -120,11 +120,11 @@ public class AssessmentEntityServiceImpl extends AbstractEntityService<Assessmen
 
     private Double calculateScore(ExpectionOption expectation, ActualValue av) {
         if (expectation != null) {
-            for (ExpectedValue ev : expectation.getExpectedValues()) {
-                if (ev.getValue().equals(av.getValue())) {
-                    return new Double(ev.getWeight());
-                }
-            }
+//            for (ExpectedValue ev : expectation.getExpectedValues()) {
+//                if (ev.getValue().equals(av.getValue())) {
+//                    return new Double(ev.getWeight());
+//                }
+//            }
         }
 
         return new Double(0);
