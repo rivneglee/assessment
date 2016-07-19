@@ -107,7 +107,9 @@ public class AssessmentEntityServiceImpl extends AbstractEntityService<Assessmen
                 GroupRow row = rowMap.get(av.getSubjectGuid());
                 if (row != null) {
                     av.setScore(calculateScore(row.getOptionMap().get(av.getSpecimenGuid()), av));
-                    form.setStatus("F");
+                    if (form.getStatus().equals("C")) {
+                        form.setStatus("F");
+                    }
                     formRepository.save(form);
                 }
             }

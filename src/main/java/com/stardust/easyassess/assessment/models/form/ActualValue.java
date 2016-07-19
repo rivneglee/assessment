@@ -8,7 +8,6 @@ public class ActualValue {
     private TestSubject subject;
     private String subjectGuid;
     private String value;
-    private String valueType;
     private Double score;
 
     public Double getScore() {
@@ -17,14 +16,6 @@ public class ActualValue {
 
     public void setScore(Double score) {
         this.score = score;
-    }
-
-    public String getValueType() {
-        return valueType;
-    }
-
-    public void setValueType(String valueType) {
-        this.valueType = valueType;
     }
 
     public String getSpecimenNumber() {

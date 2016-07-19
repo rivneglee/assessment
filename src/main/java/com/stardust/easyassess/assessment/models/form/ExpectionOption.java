@@ -11,6 +11,8 @@ public class ExpectionOption extends FormElement {
 	
 	private List<OptionValue> optionValues = new ArrayList<OptionValue>();
 
+	private List<OptionParameter> parameters = new ArrayList<OptionParameter>();
+
 	public List<ExpectedValue> getExpectedValues() {
 		return expectedValues;
 	}
@@ -35,4 +37,11 @@ public class ExpectionOption extends FormElement {
 		this.type = type;
 	}
 
+	public List<OptionParameter> getParameters() {
+		return parameters;
+	}
+
+	public void setParameters(List<OptionParameter> parameters) {
+		this.parameters = parameters;
+	}
 }
