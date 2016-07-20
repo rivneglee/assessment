@@ -9,6 +9,7 @@ import com.stardust.easyassess.assessment.models.form.FormData;
 import com.stardust.easyassess.assessment.services.EntityService;
 import com.stardust.easyassess.assessment.services.FormService;
 import com.stardust.easyassess.assessment.services.FormTemplateService;
+import com.stardust.easyassess.core.exception.MinistryOnlyException;
 import com.stardust.easyassess.core.presentation.ViewJSONWrapper;
 import com.stardust.easyassess.core.query.Selection;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,7 +35,7 @@ public class FormController extends MaintenanceController<Form> {
 
     @RequestMapping(path="/submit/{id}",
             method={RequestMethod.PUT})
-    public ViewJSONWrapper submit(@PathVariable String id, @RequestBody FormData data) {
+    public ViewJSONWrapper submit(@PathVariable String id, @RequestBody FormData data) throws MinistryOnlyException {
         Form form = getOwnerFormById(id);
         form.setValues(data.getValues());
         form.setCodes(data.getCodes());
@@ -43,7 +44,7 @@ public class FormController extends MaintenanceController<Form> {
     }
 
     @Override
-    public ViewJSONWrapper get(@PathVariable String id) {
+    public ViewJSONWrapper get(@PathVariable String id) throws MinistryOnlyException {
         Form form = getOwnerFormById(id);
 
         FormTemplateService templateService = getApplicationContext().getBean(FormTemplateService.class);
@@ -62,7 +63,7 @@ public class FormController extends MaintenanceController<Form> {
                                          @RequestParam(value = "size", defaultValue = "4") Integer size,
                                          @RequestParam(value = "sort", defaultValue = "id") String sort,
                                          @RequestParam(value = "filterField", defaultValue = "") String field,
-                                         @RequestParam(value = "filterValue", defaultValue = "") String value ) {
+                                         @RequestParam(value = "filterValue", defaultValue = "") String value ) throws MinistryOnlyException {
         return buildFormList("F", page, size, sort, field, value);
     }
 
@@ -72,7 +73,7 @@ public class FormController extends MaintenanceController<Form> {
                                       @RequestParam(value = "size", defaultValue = "4") Integer size,
                                       @RequestParam(value = "sort", defaultValue = "id") String sort,
                                       @RequestParam(value = "filterField", defaultValue = "") String field,
-                                      @RequestParam(value = "filterValue", defaultValue = "") String value ) {
+                                      @RequestParam(value = "filterValue", defaultValue = "") String value ) throws MinistryOnlyException {
 
         List<Selection> selections = new ArrayList();
         selections.add(new Selection(field, Selection.Operator.LIKE, value));
@@ -83,7 +84,7 @@ public class FormController extends MaintenanceController<Form> {
         return new ViewJSONWrapper(getService().list(page, size , sort, selections));
     }
 
-    private Form getOwnerFormById(String id) {
+    private Form getOwnerFormById(String id) throws MinistryOnlyException {
         Form form = getService().get(id);
         Owner owner = getOwner();
         if (owner != null) {
@@ -94,7 +95,7 @@ public class FormController extends MaintenanceController<Form> {
         return form;
     }
 
-    private ViewJSONWrapper buildFormList(String status, Integer page, Integer size, String sort, String field, String value) {
+    private ViewJSONWrapper buildFormList(String status, Integer page, Integer size, String sort, String field, String value) throws MinistryOnlyException {
         List<Selection> selections = new ArrayList();
         selections.add(new Selection(field, Selection.Operator.LIKE, value));
         selections.add(new Selection("status", Selection.Operator.EQUAL, status));

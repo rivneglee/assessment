@@ -1,5 +1,6 @@
 package com.stardust.easyassess.assessment.aspects;
 
+import com.stardust.easyassess.core.exception.MinistryOnlyException;
 import com.stardust.easyassess.core.presentation.Message;
 import com.stardust.easyassess.core.presentation.ResultCode;
 import com.stardust.easyassess.core.presentation.ViewJSONWrapper;
@@ -61,6 +62,8 @@ public class LogAspect {
         Object result = null;
         try {
             result = pjp.proceed();
+        } catch (MinistryOnlyException e) {
+            result = new ViewJSONWrapper(new Message("该操作仅限于卫生机构用户"), ResultCode.FAILED);
         } catch (Exception e) {
             logger.error(e.getMessage());
             result = new ViewJSONWrapper(new Message("Error:" + e.getMessage()), ResultCode.FAILED);e.printStackTrace();

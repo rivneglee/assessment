@@ -6,6 +6,7 @@ import com.stardust.easyassess.assessment.models.Owner;
 import com.stardust.easyassess.assessment.models.form.Specimen;
 import com.stardust.easyassess.assessment.services.AssessmentService;
 import com.stardust.easyassess.assessment.services.EntityService;
+import com.stardust.easyassess.core.exception.MinistryOnlyException;
 import com.stardust.easyassess.core.presentation.ViewJSONWrapper;
 import com.stardust.easyassess.core.query.Selection;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +29,7 @@ public class AssessmentController extends MaintenanceController<Assessment> {
     @Override
     @ResponseBody
     @RequestMapping(method={RequestMethod.POST})
-    public ViewJSONWrapper add(@RequestBody Assessment model) {
+    public ViewJSONWrapper add(@RequestBody Assessment model) throws Exception {
         if (preAdd(model)) {
             ((AssessmentService)getService()).createAssessment(model);
             return postAdd(getService().save(model));
@@ -38,8 +39,8 @@ public class AssessmentController extends MaintenanceController<Assessment> {
     }
 
     @Override
-    protected boolean preList(List<Selection> selections) {
-        Owner owner = getOwner();
+    protected boolean preList(List<Selection> selections) throws MinistryOnlyException {
+        Owner owner = getNullableOwner();
         if (owner != null && owner.getId() != null && !owner.getId().isEmpty()) {
             selections.add(new Selection("owner", Selection.Operator.EQUAL, owner.getId()));
         }
@@ -47,7 +48,7 @@ public class AssessmentController extends MaintenanceController<Assessment> {
     }
 
     @Override
-    protected boolean preAdd(Assessment model) {
+    protected boolean preAdd(Assessment model) throws Exception {
         Owner owner = getOwner();
         model.setOwner(owner.getId());
         model.setOwnerName(owner.getName());
@@ -55,7 +56,7 @@ public class AssessmentController extends MaintenanceController<Assessment> {
     }
 
     @Override
-    protected boolean preUpdate(String id, Assessment model) {
+    protected boolean preUpdate(String id, Assessment model) throws Exception {
         Owner owner = getOwner();
         model.setOwner(owner.getId());
         model.setOwnerName(owner.getName());
@@ -87,12 +88,12 @@ public class AssessmentController extends MaintenanceController<Assessment> {
                                 @RequestParam(value = "size", defaultValue = "4") Integer size,
                                 @RequestParam(value = "sort", defaultValue = "id") String sort,
                                 @RequestParam(value = "filterField", defaultValue = "") String field,
-                                @RequestParam(value = "filterValue", defaultValue = "") String value ) {
+                                @RequestParam(value = "filterValue", defaultValue = "") String value ) throws MinistryOnlyException {
 
         List<Selection> selections = new ArrayList();
         selections.add(new Selection(field, Selection.Operator.LIKE, value));
         selections.add(new Selection("status", Selection.Operator.EQUAL, "A"));
-        Owner owner = getOwner();
+        Owner owner = getNullableOwner();
         if (owner != null) {
             selections.add(new Selection("participants." + owner.getId(), Selection.Operator.EXSITS, true));
             return new ViewJSONWrapper(getService().list(page, size , sort, selections));

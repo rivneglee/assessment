@@ -9,6 +9,7 @@ import com.stardust.easyassess.core.presentation.Message;
 import com.stardust.easyassess.core.presentation.ResultCode;
 import com.stardust.easyassess.core.presentation.ViewJSONWrapper;
 import com.stardust.easyassess.core.query.Selection;
+import com.stardust.easyassess.core.exception.MinistryOnlyException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.data.domain.Page;
@@ -50,7 +51,15 @@ public abstract class MaintenanceController<T> {
 
     protected abstract EntityService<T> getService();
 
-    protected Owner getOwner() {
+    protected Owner getNullableOwner() {
+        try {
+            return getOwner();
+        } catch (MinistryOnlyException e) {
+            return null;
+        }
+    }
+
+    protected Owner getOwner() throws MinistryOnlyException {
         List<Long> ministries = (List<Long>)getUserProfile().get("ministries");
         Map<Long, String> ministryMap = (Map<Long, String>)getUserProfile().get("ministryMap");
         Owner owner = null;
@@ -60,6 +69,11 @@ public abstract class MaintenanceController<T> {
             owner = new Owner(id, name);
 
         }
+
+        if (owner == null) {
+            throw new MinistryOnlyException();
+        }
+
         return owner;
     }
 
@@ -79,7 +93,7 @@ public abstract class MaintenanceController<T> {
                                 @RequestParam(value = "size", defaultValue = "4") Integer size,
                                 @RequestParam(value = "sort", defaultValue = "id") String sort,
                                 @RequestParam(value = "filterField", defaultValue = "") String field,
-                                @RequestParam(value = "filterValue", defaultValue = "") String value ) {
+                                @RequestParam(value = "filterValue", defaultValue = "") String value ) throws Exception {
 
         List<Selection> selections = new ArrayList<Selection>();
         selections.add(new Selection(field, Selection.Operator.LIKE, value));
@@ -92,7 +106,7 @@ public abstract class MaintenanceController<T> {
 
     @RequestMapping(value = "/{id}",
             method={RequestMethod.GET})
-    public ViewJSONWrapper get(@PathVariable String id) {
+    public ViewJSONWrapper get(@PathVariable String id) throws Exception {
         if (preGet(id)) {
             return postGet(getService().get(id));
         } else {
@@ -103,7 +117,7 @@ public abstract class MaintenanceController<T> {
     @ResponseBody
     @RequestMapping(value="{id}", method={RequestMethod.PUT})
     public ViewJSONWrapper update(@PathVariable String id,
-                                  @RequestBody T model) {
+                                  @RequestBody T model) throws Exception {
         if (preUpdate(id, model)) {
             return postUpdate(getService().save(model));
         } else {
@@ -113,7 +127,7 @@ public abstract class MaintenanceController<T> {
 
     @ResponseBody
     @RequestMapping(method={RequestMethod.POST})
-    public ViewJSONWrapper add(@RequestBody T model) {
+    public ViewJSONWrapper add(@RequestBody T model) throws Exception {
         if (preAdd(model)) {
             return postAdd(getService().save(model));
         } else {
@@ -123,50 +137,50 @@ public abstract class MaintenanceController<T> {
 
     @ResponseBody
     @RequestMapping(value="{id}", method={RequestMethod.DELETE})
-    public void delete(@PathVariable String id) {
+    public void delete(@PathVariable String id) throws Exception {
         if (preDelete(id)) {
             getService().remove(id);
             postDelete(id);
         }
     }
 
-    protected boolean preGet(String id) {
+    protected boolean preGet(String id) throws Exception {
         return true;
     }
 
-    protected ViewJSONWrapper postGet(T model) {
+    protected ViewJSONWrapper postGet(T model) throws Exception {
         return new ViewJSONWrapper(model);
     }
 
-    protected boolean preList(List<Selection> selections) {
+    protected boolean preList(List<Selection> selections) throws Exception {
         return true;
     }
 
-    protected ViewJSONWrapper postList(Page<T> page) {
+    protected ViewJSONWrapper postList(Page<T> page) throws Exception {
         return new ViewJSONWrapper(page);
     }
 
-    protected boolean preDelete(String id) {
+    protected boolean preDelete(String id) throws Exception {
         return true;
     }
 
-    protected void postDelete(String id) {
+    protected void postDelete(String id) throws Exception {
 
     }
 
-    protected boolean preUpdate(String id, T model) {
+    protected boolean preUpdate(String id, T model) throws Exception {
         return ((DataModel)model).validate();
     }
 
-    protected ViewJSONWrapper postUpdate(T model) {
+    protected ViewJSONWrapper postUpdate(T model) throws Exception {
         return new ViewJSONWrapper(model);
     }
 
-    protected boolean preAdd(T model) {
+    protected boolean preAdd(T model) throws Exception {
         return ((DataModel)model).validate();
     }
 
-    protected ViewJSONWrapper postAdd(T model) {
+    protected ViewJSONWrapper postAdd(T model) throws Exception {
         return new ViewJSONWrapper(model);
     }
 
