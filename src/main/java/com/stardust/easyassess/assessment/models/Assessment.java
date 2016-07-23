@@ -3,7 +3,6 @@ package com.stardust.easyassess.assessment.models;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.stardust.easyassess.assessment.models.form.Form;
-import org.apache.commons.collections.map.HashedMap;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -28,7 +27,7 @@ public class Assessment extends DataModel {
     private Map<String, String> participants;
     private String templateGuid;
     @Embedded
-    private Map<String, List<String>> specimenCodes = new HashedMap();
+    private Map<String, List<String>> specimenCodes = new HashMap();
 
     @DBRef
     private List<Form> forms = new ArrayList<Form>();
