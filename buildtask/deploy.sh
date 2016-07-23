@@ -11,7 +11,7 @@ api_service_path=/usr/esapp/api-services
 function package()
 {
     echo "building package"
-    mvn -Dmaven.test.failure.ignore clean install
+    mvn -Dmaven.test.failure.ignore -Dspring.profiles.active=test clean package
 }
 
 function startup()
