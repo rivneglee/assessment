@@ -10,7 +10,17 @@ public class GroupSection extends FormElement {
 	
 	private List<Specimen> specimens;
 
+	private List<CodeGroup> codeGroups;
+
 	private List<GroupRow> rows;
+
+	public List<CodeGroup> getCodeGroups() {
+		return codeGroups;
+	}
+
+	public void setCodeGroups(List<CodeGroup> codeGroups) {
+		this.codeGroups = codeGroups;
+	}
 
 	public String getGuid() {
 		return guid;

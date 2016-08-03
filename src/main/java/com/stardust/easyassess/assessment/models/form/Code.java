@@ -6,8 +6,18 @@ public class Code extends FormElement {
     private String subjectGuid;
     private String codeNumber;
     private String codeName;
-    private String codeGroupName;
-    private String codeGroupId;
+//    private String codeGroupName;
+//    private String codeGroupId;
+
+    private CodeGroup codeGroup;
+
+    public CodeGroup getCodeGroup() {
+        return codeGroup;
+    }
+
+    public void setCodeGroup(CodeGroup codeGroup) {
+        this.codeGroup = codeGroup;
+    }
 
     public TestSubject getSubject() {
         return subject;
@@ -41,19 +51,19 @@ public class Code extends FormElement {
         this.codeName = codeName;
     }
 
-    public String getCodeGroupName() {
-        return codeGroupName;
-    }
-
-    public void setCodeGroupName(String codeGroupName) {
-        this.codeGroupName = codeGroupName;
-    }
-
-    public String getCodeGroupId() {
-        return codeGroupId;
-    }
-
-    public void setCodeGroupId(String codeGroupId) {
-        this.codeGroupId = codeGroupId;
-    }
+//    public String getCodeGroupName() {
+//        return codeGroupName;
+//    }
+//
+//    public void setCodeGroupName(String codeGroupName) {
+//        this.codeGroupName = codeGroupName;
+//    }
+//
+//    public String getCodeGroupId() {
+//        return codeGroupId;
+//    }
+//
+//    public void setCodeGroupId(String codeGroupId) {
+//        this.codeGroupId = codeGroupId;
+//    }
 }

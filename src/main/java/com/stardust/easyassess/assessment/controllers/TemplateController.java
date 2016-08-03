@@ -7,7 +7,7 @@ import com.stardust.easyassess.core.presentation.ViewJSONWrapper;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.web.bind.annotation.*;
 
-
+@CrossOrigin("*")
 @RestController
 @RequestMapping({"{domain}/assess/template"})
 @EnableAutoConfiguration
