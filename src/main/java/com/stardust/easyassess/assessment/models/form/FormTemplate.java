@@ -13,6 +13,8 @@ public class FormTemplate extends FormElement {
 
 	private String guid;
 
+	private String owner;
+
 	private FormHeader header;
 
 	private List<GroupSection> groups;
@@ -51,5 +53,13 @@ public class FormTemplate extends FormElement {
 
 	public void setId(String id) {
 		this.id = id;
+	}
+
+	public String getOwner() {
+		return owner;
+	}
+
+	public void setOwner(String owner) {
+		this.owner = owner;
 	}
 }

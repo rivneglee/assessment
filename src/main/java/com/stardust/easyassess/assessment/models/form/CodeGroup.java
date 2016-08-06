@@ -2,8 +2,17 @@ package com.stardust.easyassess.assessment.models.form;
 
 
 public class CodeGroup extends FormElement {
+    private String guid;
     private String name;
     private String id;
+
+    public String getGuid() {
+        return guid;
+    }
+
+    public void setGuid(String guid) {
+        this.guid = guid;
+    }
 
     public String getId() {
         return id;
