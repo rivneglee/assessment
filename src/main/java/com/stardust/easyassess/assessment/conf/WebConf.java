@@ -13,7 +13,7 @@ public class WebConf extends WebMvcConfigurerAdapter {
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
                 .allowedOrigins("*")
-                .allowedMethods("PUT", "DELETE", "GET", "POST")
+                .allowedMethods("PUT", "DELETE", "GET", "POST", "OPTIONS")
                 .allowCredentials(true);
     }
 }
