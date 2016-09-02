@@ -17,8 +17,6 @@ import org.springframework.web.bind.annotation.*;
 import java.util.ArrayList;
 import java.util.List;
 
-
-@CrossOrigin("*")
 @RestController
 @RequestMapping({"{domain}/assess/assessment"})
 @EnableAutoConfiguration
