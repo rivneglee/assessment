@@ -21,13 +21,6 @@ public class Form extends FormElement {
     @DBRef
     private Assessment assessment;
 
-    private String tester;
-
-    @JsonFormat(pattern="yyyy-MM-dd")
-    private Date testDate;
-
-    private String reviewer;
-
     private String owner;
 
     private String status;
@@ -42,30 +35,6 @@ public class Form extends FormElement {
     private List<ActualValue> values = new ArrayList<ActualValue>();
 
     private List<Code> codes = new ArrayList();
-
-    public String getTester() {
-        return tester;
-    }
-
-    public void setTester(String tester) {
-        this.tester = tester;
-    }
-
-    public Date getTestDate() {
-        return testDate;
-    }
-
-    public void setTestDate(Date testDate) {
-        this.testDate = testDate;
-    }
-
-    public String getReviewer() {
-        return reviewer;
-    }
-
-    public void setReviewer(String reviewer) {
-        this.reviewer = reviewer;
-    }
 
     public String getOwner() {
         return owner;

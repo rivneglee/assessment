@@ -38,9 +38,6 @@ public class FormController extends MaintenanceController<Form> {
         Form form = getOwnerFormById(id);
         form.setValues(data.getValues());
         form.setCodes(data.getCodes());
-        form.setTester(data.getTester());
-        form.setReviewer(data.getReviewer());
-        form.setTestDate(data.getTestDate());
         ((FormService)getService()).submit(form);
         return new ViewJSONWrapper(form);
     }
