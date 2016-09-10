@@ -36,6 +36,8 @@ public class Form extends FormElement {
 
     private List<Code> codes = new ArrayList();
 
+    private List<Detail> details = new ArrayList();
+
     public String getOwner() {
         return owner;
     }
@@ -66,6 +68,14 @@ public class Form extends FormElement {
 
     public void setAssessment(Assessment assessment) {
         this.assessment = assessment;
+    }
+
+    public List<Detail> getDetails() {
+        return details;
+    }
+
+    public void setDetails(List<Detail> details) {
+        this.details = details;
     }
 
     public String getId() {

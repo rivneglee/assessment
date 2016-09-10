@@ -6,6 +6,8 @@ import java.util.List;
 public class FormData extends FormElement {
     private List<ActualValue> values = new ArrayList<ActualValue>();
 
+    private List<Detail> details = new ArrayList();
+
     private List<Code> codes = new ArrayList();
 
     public List<ActualValue> getValues() {
@@ -22,5 +24,13 @@ public class FormData extends FormElement {
 
     public void setCodes(List<Code> codes) {
         this.codes = codes;
+    }
+
+    public List<Detail> getDetails() {
+        return details;
+    }
+
+    public void setDetails(List<Detail> details) {
+        this.details = details;
     }
 }
