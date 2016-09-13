@@ -7,9 +7,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @Document(collection = "forms")
 public class Form extends FormElement {
@@ -36,7 +34,9 @@ public class Form extends FormElement {
 
     private List<Code> codes = new ArrayList();
 
-    private List<Detail> details = new ArrayList();
+    private List<Map<String, String>> details = new ArrayList();
+
+    private Map<String, Map<String, String>> signatures = new HashMap<String, Map<String, String>>();
 
     public String getOwner() {
         return owner;
@@ -44,6 +44,14 @@ public class Form extends FormElement {
 
     public void setOwner(String owner) {
         this.owner = owner;
+    }
+
+    public Map<String, Map<String, String>> getSignatures() {
+        return signatures;
+    }
+
+    public void setSignatures(Map<String, Map<String, String>> signatures) {
+        this.signatures = signatures;
     }
 
     public List<ActualValue> getValues() {
@@ -70,11 +78,11 @@ public class Form extends FormElement {
         this.assessment = assessment;
     }
 
-    public List<Detail> getDetails() {
+    public List<Map<String, String>> getDetails() {
         return details;
     }
 
-    public void setDetails(List<Detail> details) {
+    public void setDetails(List<Map<String, String>> details) {
         this.details = details;
     }
 

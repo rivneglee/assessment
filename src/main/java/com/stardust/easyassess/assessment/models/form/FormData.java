@@ -1,12 +1,16 @@
 package com.stardust.easyassess.assessment.models.form;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class FormData extends FormElement {
     private List<ActualValue> values = new ArrayList<ActualValue>();
 
-    private List<Detail> details = new ArrayList();
+    private List<Map<String, String>> details = new ArrayList();
+
+    private Map<String, Map<String, String>> signatures = new HashMap<String, Map<String, String>>();
 
     private List<Code> codes = new ArrayList();
 
@@ -26,11 +30,19 @@ public class FormData extends FormElement {
         this.codes = codes;
     }
 
-    public List<Detail> getDetails() {
+    public Map<String, Map<String, String>> getSignatures() {
+        return signatures;
+    }
+
+    public void setSignatures(Map<String, Map<String, String>> signatures) {
+        this.signatures = signatures;
+    }
+
+    public List<Map<String, String>> getDetails() {
         return details;
     }
 
-    public void setDetails(List<Detail> details) {
+    public void setDetails(List<Map<String, String>> details) {
         this.details = details;
     }
 }
