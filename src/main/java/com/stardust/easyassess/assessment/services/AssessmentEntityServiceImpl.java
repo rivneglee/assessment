@@ -58,22 +58,39 @@ public class AssessmentEntityServiceImpl extends AbstractEntityService<Assessmen
     @Override
     public Specimen findSpecimen(String assessmentId, String specimenCode) {
         Assessment assessment = this.get(assessmentId);
-        String originalSpecimenNumber = null;
+        Set<String> specimenNumberSet = new HashSet();
         if (assessment != null) {
             for (String specimenNumber : assessment.getSpecimenCodes().keySet()) {
                 List<String> codes = assessment.getSpecimenCodes().get(specimenNumber);
-                if (codes.contains(specimenCode)) {
-                    originalSpecimenNumber = specimenNumber;
+                if (specimenCode.contains("+")) {
+                    for (String subCode : specimenCode.split("\\+")) {
+                        if (codes.contains(subCode)) {
+                            specimenNumberSet.add(specimenNumber);
+                        }
+                    }
+                } else if (codes.contains(specimenCode)) {
+                    specimenNumberSet.add(specimenNumber);
                     break;
                 }
             }
 
-            if (originalSpecimenNumber != null) {
+            if (specimenNumberSet.size() > 0) {
                 FormTemplate template = formTemplateService.get(assessment.getTemplateGuid());
+
                 for (GroupSection groups : template.getGroups()) {
                     for (Specimen specimen : groups.getSpecimens()) {
-                        if (specimen.getNumber().equals(originalSpecimenNumber)) {
+                        if (specimenNumberSet.size() == 1
+                                && !specimen.getNumber().contains("+")
+                                && specimenNumberSet.contains(specimen.getNumber())) {
                             return specimen;
+                        }
+
+                        if (specimen.getNumber().contains("+")) {
+                            String [] numbers = specimen.getNumber().split("\\+");
+                            if (numbers.length == specimenNumberSet.size()
+                                    && specimenNumberSet.containsAll(Arrays.asList(numbers))) {
+                                return specimen;
+                            }
                         }
                     }
                 }
