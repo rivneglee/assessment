@@ -3,9 +3,11 @@ package com.stardust.easyassess.assessment.controllers;
 
 import com.stardust.easyassess.assessment.models.Assessment;
 import com.stardust.easyassess.assessment.models.Owner;
+import com.stardust.easyassess.assessment.models.form.Form;
 import com.stardust.easyassess.assessment.models.form.Specimen;
 import com.stardust.easyassess.assessment.services.AssessmentService;
 import com.stardust.easyassess.assessment.services.EntityService;
+import com.stardust.easyassess.assessment.services.FormService;
 import com.stardust.easyassess.core.exception.MinistryOnlyException;
 import com.stardust.easyassess.core.presentation.ViewJSONWrapper;
 import com.stardust.easyassess.core.query.Selection;
@@ -51,6 +53,16 @@ public class AssessmentController extends MaintenanceController<Assessment> {
         model.setOwner(owner.getId());
         model.setOwnerName(owner.getName());
         return super.preAdd(model);
+    }
+
+    @Override
+    protected boolean preDelete(String id) throws Exception {
+        FormService formService = applicationContext.getBean(FormService.class);
+        Assessment assessment = getService().get(id);
+        for (Form form : assessment.getForms()) {
+            formService.remove(form.getId());
+        }
+        return true;
     }
 
     @Override
