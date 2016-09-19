@@ -141,9 +141,13 @@ public class AssessmentEntityServiceImpl extends AbstractEntityService<Assessmen
 
     private Double calculateScore(ExpectionOption expectation, ActualValue av) {
         if (expectation != null) {
-            Map<String, ScoreCalculator> calculators = (Map<String, ScoreCalculator>)applicationContext.getBean("scoreCalculators");
-            ScoreCalculator calculator = calculators.get(expectation.getType());
-            return calculator.calculate(expectation, av);
+            try {
+                Map<String, ScoreCalculator> calculators = (Map<String, ScoreCalculator>)applicationContext.getBean("scoreCalculators");
+                ScoreCalculator calculator = calculators.get(expectation.getType());
+                return calculator.calculate(expectation, av);
+            } catch (Exception e){
+                return new Double(-1);
+            }
         }
 
         return new Double(0);
