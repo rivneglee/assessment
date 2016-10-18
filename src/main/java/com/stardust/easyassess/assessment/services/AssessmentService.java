@@ -15,7 +15,7 @@ public interface AssessmentService extends EntityService<Assessment> {
 
     List<Assessment> findByParticipant(String participant);
 
-    Specimen findSpecimen(String assessmentId, String specimenCode);
+    Specimen findSpecimen(String assessmentId, String group,  String specimenCode);
 
     Assessment finalizeAssessment(String id);
 

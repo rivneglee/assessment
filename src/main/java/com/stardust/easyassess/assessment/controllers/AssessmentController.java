@@ -78,10 +78,10 @@ public class AssessmentController extends MaintenanceController<Assessment> {
         return getApplicationContext().getBean(AssessmentService.class);
     }
 
-    @RequestMapping(path="/{id}/specimen/guid/{code}",
+    @RequestMapping(path="/{id}/group/{group}/specimen/guid/{code}",
             method={RequestMethod.GET})
-    public ViewJSONWrapper getSpecimenGuid(@PathVariable String id, @PathVariable String code) {
-        Specimen specimen = ((AssessmentService)getService()).findSpecimen(id, code);
+    public ViewJSONWrapper getSpecimenGuid(@PathVariable String id, @PathVariable String group, @PathVariable String code) {
+        Specimen specimen = ((AssessmentService)getService()).findSpecimen(id, group ,code);
         return new ViewJSONWrapper(specimen == null ? "":specimen.getGuid());
     }
 

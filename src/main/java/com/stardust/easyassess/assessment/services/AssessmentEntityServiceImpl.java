@@ -56,7 +56,7 @@ public class AssessmentEntityServiceImpl extends AbstractEntityService<Assessmen
     }
 
     @Override
-    public Specimen findSpecimen(String assessmentId, String specimenCode) {
+    public Specimen findSpecimen(String assessmentId, String groupId, String specimenCode) {
         Assessment assessment = this.get(assessmentId);
         Set<String> specimenNumberSet = new HashSet();
         if (assessment != null) {
@@ -78,6 +78,7 @@ public class AssessmentEntityServiceImpl extends AbstractEntityService<Assessmen
                 FormTemplate template = formTemplateService.get(assessment.getTemplateGuid());
 
                 for (GroupSection groups : template.getGroups()) {
+                    if (!groups.getGuid().equals(groupId)) continue;
                     for (Specimen specimen : groups.getSpecimens()) {
                         if (specimenNumberSet.size() == 1
                                 && !specimen.getNumber().contains("+")
