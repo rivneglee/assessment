@@ -44,6 +44,15 @@ public class FormController extends MaintenanceController<Form> {
         return new ViewJSONWrapper(form);
     }
 
+    @RequestMapping(path="/reject/{id}",
+            method={RequestMethod.PUT})
+    public ViewJSONWrapper reject(@PathVariable String id) throws MinistryOnlyException {
+        Form form = getOwnerFormById(id);
+        form.setStatus("A");
+        getService().save(form);
+        return new ViewJSONWrapper(form);
+    }
+
     @Override
     public ViewJSONWrapper get(@PathVariable String id) throws MinistryOnlyException {
         Form form = getOwnerFormById(id);
