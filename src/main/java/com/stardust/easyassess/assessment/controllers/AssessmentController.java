@@ -11,14 +11,19 @@ import com.stardust.easyassess.assessment.services.FormService;
 import com.stardust.easyassess.core.exception.MinistryOnlyException;
 import com.stardust.easyassess.core.presentation.ViewJSONWrapper;
 import com.stardust.easyassess.core.query.Selection;
+
+import jxl.write.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.ApplicationContext;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+@CrossOrigin("*")
 @RestController
 @RequestMapping({"{domain}/assess/assessment"})
 @EnableAutoConfiguration
@@ -109,6 +114,18 @@ public class AssessmentController extends MaintenanceController<Assessment> {
             return new ViewJSONWrapper(getService().list(page, size , sort, selections));
         } else {
             return new ViewJSONWrapper(null);
+        }
+    }
+
+    @RequestMapping(path="/excel/{id}",
+            method={RequestMethod.GET})
+    public void export(@PathVariable String id, HttpServletResponse response) throws IOException, WriteException {
+        Assessment assessment = getService().get(id);
+        if (assessment.getId().equals(id)) {
+            response.reset();
+            response.setHeader("Content-disposition", "attachment;filename=" +  java.net.URLEncoder.encode(assessment.getName(), "UTF-8") + ".xls");
+            response.setContentType("application/msexcel");
+            ((AssessmentService)getService()).exportToExcel(assessment, response.getOutputStream());
         }
     }
 }

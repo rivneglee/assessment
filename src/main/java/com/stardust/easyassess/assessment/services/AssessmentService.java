@@ -6,8 +6,12 @@ import com.stardust.easyassess.assessment.models.form.ActualValue;
 import com.stardust.easyassess.assessment.models.form.Form;
 import com.stardust.easyassess.assessment.models.form.Specimen;
 import com.stardust.easyassess.core.query.Selection;
+import jxl.write.WriteException;
 import org.springframework.data.domain.Page;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.util.List;
 
 public interface AssessmentService extends EntityService<Assessment> {
@@ -20,4 +24,6 @@ public interface AssessmentService extends EntityService<Assessment> {
     Assessment finalizeAssessment(String id);
 
     void finalizeAssessment(Assessment assessment);
+
+    void exportToExcel(Assessment assessment, OutputStream outputStream) throws IOException, WriteException;
 }
