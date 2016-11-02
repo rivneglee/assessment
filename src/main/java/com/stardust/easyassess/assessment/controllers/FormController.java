@@ -105,9 +105,9 @@ public class FormController extends MaintenanceController<Form> {
             method={RequestMethod.GET})
     public void export(@PathVariable String id, HttpServletResponse response) throws IOException, WriteException {
         Form form = getService().get(id);
-        if (form.getStatus().equals("F")) {
+        if (form.getStatus().equals("F") || form.getStatus().equals("C")) {
             response.reset();
-            response.setHeader("Content-disposition", "attachment;filename=" +  java.net.URLEncoder.encode(form.getAssessment().getName(), "UTF-8") + ".xls");
+            response.setHeader("Content-disposition", "attachment;filename=" +  java.net.URLEncoder.encode(form.getOwnerName() + "_" + form.getAssessment().getName(), "UTF-8") + ".xls");
             response.setContentType("application/msexcel");
             ((FormService)getService()).exportToExcel(form, response.getOutputStream());
         }

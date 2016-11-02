@@ -160,67 +160,61 @@ public class AssessmentEntityServiceImpl extends AbstractEntityService<Assessmen
         labelFormat.setVerticalAlignment(VerticalAlignment.CENTRE);
         labelFormat.setAlignment(Alignment.CENTRE);
         labelFormat.setWrap(false);
+        // render groups
         for (int i = 0; i < template.getGroups().size(); i++) {
             GroupSection group = template.getGroups().get(i);
             WritableSheet sheet = workbook.createSheet(group.getName(), i);
-            // append specimens (j)
-            for (int j = 0; j < group.getSpecimens().size(); j++) {
-                Specimen specimen = group.getSpecimens().get(j);
-                // append specimen number
-                sheet.addCell(new Label(j + 2, 0, specimen.getNumber(), labelFormat));
-                int groupLineCount = 0;
-                // append rows (x)
-                for (int x = 0; x < group.getRows().size(); x++) {
-                    GroupRow row = group.getRows().get(x);
-                    // append forms (y)
-                    for (int y = 0; y < assessment.getForms().size(); y++) {
-                        groupLineCount++;
-                        Form form = assessment.getForms().get(y);
-                        // append owner
-                        sheet.addCell(new Label(1, groupLineCount, form.getOwnerName(), labelFormat));
-                        // append values
+            // render rows
+            for (int j = 0; j < group.getRows().size(); j++) {
+                GroupRow row = group.getRows().get(j);
+                int startIndex = (j * assessment.getForms().size()) + 1;
+                sheet.addCell(new Label(0, startIndex, row.getItem().getSubject() + "-" + row.getItem().getUnit(), labelFormat));
+                sheet.mergeCells(0, startIndex, 0, startIndex + assessment.getForms().size() - 1);
+                for (int h = 0; h < assessment.getForms().size(); h++) {
+                    Form form = assessment.getForms().get(h);
+                    sheet.addCell(new Label(1, (j * assessment.getForms().size()) + h + 1, form.getOwnerName(), labelFormat));
+                    // render values
+                    for (int k = 0; k < group.getSpecimens().size(); k++) {
+                        Specimen specimen = group.getSpecimens().get(k);
                         for (ActualValue value : form.getValues()) {
                             if (value.getSpecimenGuid().equals(specimen.getGuid())
                                     && value.getSubjectGuid().equals(row.getGuid())) {
-                                WritableCell valueCell = new Label(j + 2, groupLineCount, value.getValue(), labelFormat);
+                                WritableCell valueCell = new Label(k + 2, (j * assessment.getForms().size()) + h + 1, value.getValue(), labelFormat);
+                                sheet.addCell(valueCell);
                                 WritableCellFeatures cellFeatures = new WritableCellFeatures();
                                 cellFeatures.setComment("盲样码:" + value.getSpecimenCode());
                                 valueCell.setCellFeatures(cellFeatures);
-                                sheet.addCell(valueCell);
                                 break;
                             }
                         }
                     }
-                    if (j == 0) {
-                        sheet.addCell(new Label(0, groupLineCount - (assessment.getForms().size() - 1), row.getItem().getSubject() + "-" + row.getItem().getUnit(), labelFormat));
-                        sheet.mergeCells(0, groupLineCount - (assessment.getForms().size() - 1), 0, groupLineCount);
-                    }
-                }
-
-
-            }
-
-            // code groups
-            for (int j = 0; j < group.getCodeGroups().size(); j++) {
-                CodeGroup codeGroup = group.getCodeGroups().get(j);
-                sheet.addCell(new Label(group.getSpecimens().size() + 4 + j, 0, codeGroup.getName(), labelFormat));
-                int groupLineCount = 0;
-                // append rows (x)
-                for (int x = 0; x < group.getRows().size(); x++) {
-                    GroupRow row = group.getRows().get(x);
-                    for (int y = 0; y < assessment.getForms().size(); y++) {
-                        groupLineCount++;
-                        Form form = assessment.getForms().get(y);
+                    // render codes
+                    for (int k = 0; k < group.getCodeGroups().size(); k++) {
+                        CodeGroup codeGroup = group.getCodeGroups().get(k);
                         for (Code code : form.getCodes()) {
                             if (code.getCodeGroup().getGuid().equals(codeGroup.getGuid())
                                     && code.getSubjectGuid().equals(row.getGuid())) {
-                                sheet.addCell(new Label(j + 4 + group.getSpecimens().size(), groupLineCount, code.getCodeName(), labelFormat));
+                                sheet.addCell(new Label(k + group.getSpecimens().size() + 3, (j * assessment.getForms().size()) + h + 1, code.getCodeName(), labelFormat));
                                 break;
                             }
                         }
                     }
                 }
+
             }
+
+            // render specimen title
+            for (int j = 0; j < group.getSpecimens().size(); j++) {
+                Specimen specimen = group.getSpecimens().get(j);
+                sheet.addCell(new Label(j + 2, 0, specimen.getNumber(), labelFormat));
+            }
+
+            // render group code title
+            for (int j = 0; j < group.getCodeGroups().size(); j++) {
+                CodeGroup codeGroup = group.getCodeGroups().get(j);
+                sheet.addCell(new Label(j + group.getSpecimens().size() + 3, 0, codeGroup.getName(), labelFormat));
+            }
+
         }
 
         workbook.write();
