@@ -1,22 +1,27 @@
 package com.stardust.easyassess.assessment.controllers;
 
 
+import com.stardust.easyassess.assessment.models.Assessment;
 import com.stardust.easyassess.assessment.models.Owner;
 import com.stardust.easyassess.assessment.models.form.ActualValue;
 import com.stardust.easyassess.assessment.models.form.Code;
 import com.stardust.easyassess.assessment.models.form.Form;
 import com.stardust.easyassess.assessment.models.form.FormData;
+import com.stardust.easyassess.assessment.services.AssessmentService;
 import com.stardust.easyassess.assessment.services.EntityService;
 import com.stardust.easyassess.assessment.services.FormService;
 import com.stardust.easyassess.assessment.services.FormTemplateService;
 import com.stardust.easyassess.core.exception.MinistryOnlyException;
 import com.stardust.easyassess.core.presentation.ViewJSONWrapper;
 import com.stardust.easyassess.core.query.Selection;
+import jxl.write.WriteException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.ApplicationContext;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.*;
 
 @CrossOrigin("*")
@@ -94,6 +99,18 @@ public class FormController extends MaintenanceController<Form> {
             selections.add(new Selection("owner", Selection.Operator.EQUAL, getOwner().getId()));
         }
         return new ViewJSONWrapper(getService().list(page, size , sort, selections));
+    }
+
+    @RequestMapping(path="/excel/{id}",
+            method={RequestMethod.GET})
+    public void export(@PathVariable String id, HttpServletResponse response) throws IOException, WriteException {
+        Form form = getService().get(id);
+        if (form.getStatus().equals("F")) {
+            response.reset();
+            response.setHeader("Content-disposition", "attachment;filename=" +  java.net.URLEncoder.encode(form.getAssessment().getName(), "UTF-8") + ".xls");
+            response.setContentType("application/msexcel");
+            ((FormService)getService()).exportToExcel(form, response.getOutputStream());
+        }
     }
 
     private Form getOwnerFormById(String id) throws MinistryOnlyException {
