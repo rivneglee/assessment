@@ -5,9 +5,11 @@ import com.stardust.easyassess.assessment.dao.repositories.FormRepository;
 import com.stardust.easyassess.assessment.dao.repositories.FormTemplateRepository;
 import com.stardust.easyassess.assessment.models.form.*;
 import jxl.Workbook;
+import jxl.format.*;
 import jxl.format.Alignment;
 import jxl.format.Border;
 import jxl.format.BorderLineStyle;
+import jxl.format.Colour;
 import jxl.format.VerticalAlignment;
 import jxl.write.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -143,7 +145,26 @@ public class FormServiceImpl extends AbstractEntityService<Form> implements Form
                     for (ActualValue value : form.getValues()) {
                         if (value.getSpecimenGuid().equals(specimen.getGuid())
                                 && value.getSubjectGuid().equals(row.getGuid())) {
-                            sheet.addCell(new Label(k + 1, j + 1, value.getValue(), labelFormat));
+                            WritableCell valueCell;
+                            if (value.getScore() != null && value.getScore().compareTo(new Double(100 / group.getSpecimens().size())) == -1) {
+                                WritableFont redFont = new WritableFont(WritableFont.ARIAL, 10, WritableFont.BOLD);
+                                redFont.setColour(Colour.RED);
+                                WritableCellFormat redFormat = new WritableCellFormat(redFont);
+                                redFormat.setAlignment(Alignment.CENTRE);
+                                valueCell = new Label(k + 1, j + 1, value.getValue(), redFormat);
+                            } else {
+                                valueCell = new Label(k + 1, j + 1, value.getValue(), labelFormat);
+                            }
+                            if (row.getOptionMap() != null && row.getOptionMap().containsKey(specimen.getGuid())) {
+                                ExpectionOption eo = row.getOptionMap().get(specimen.getGuid());
+                                WritableCellFeatures cellFeatures = new WritableCellFeatures();
+                                if (eo.getExpectedValues() != null && !eo.getExpectedValues().isEmpty()) {
+                                    cellFeatures.setComment("标准值:" + Arrays.toString(eo.getExpectedValues().toArray()));
+                                    valueCell.setCellFeatures(cellFeatures);
+                                }
+                            }
+
+                            sheet.addCell(valueCell);
                             specimenNumberCodeMap.put(value.getSpecimenNumber(), value.getSpecimenCode());
                             break;
                         }
