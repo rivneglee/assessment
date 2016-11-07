@@ -210,19 +210,22 @@ public class FormServiceImpl extends AbstractEntityService<Form> implements Form
             sheet.addCell(new Label(group.getSpecimens().size() + group.getCodeGroups().size() + 3, 0, "试剂批号", labelFormat));
             sheet.addCell(new Label(group.getSpecimens().size() + group.getCodeGroups().size() + 4, 0, "试剂有效期", labelFormat));
 
-            // 签名
-            sheet.addCell(new Label(0, group.getRows().size() + 2, "检测人:", labelFormat));
-            sheet.addCell(new Label(1, group.getRows().size() + 2, form.getSignatures().get(group.getGuid()).get("tester"), labelFormat));
-            sheet.addCell(new Label(3, group.getRows().size() + 2, "检测日期:", labelFormat));
-            sheet.addCell(new Label(4, group.getRows().size() + 2, form.getSignatures().get(group.getGuid()).get("testDate"), labelFormat));
-            sheet.addCell(new Label(0, group.getRows().size() + 3, "审核人:", labelFormat));
-            sheet.addCell(new Label(1, group.getRows().size() + 3, form.getSignatures().get(group.getGuid()).get("reviewer"), labelFormat));
-            sheet.addCell(new Label(3, group.getRows().size() + 3, "检测日期:", labelFormat));
-            sheet.addCell(new Label(4, group.getRows().size() + 3, form.getSignatures().get(group.getGuid()).get("reviewDate"), labelFormat));
+            if (form.getSignatures().get(group.getGuid()) != null) {
+                // 签名
+                sheet.addCell(new Label(0, group.getRows().size() + 2, "检测人:", labelFormat));
+                sheet.addCell(new Label(1, group.getRows().size() + 2, form.getSignatures().get(group.getGuid()).get("tester"), labelFormat));
+                sheet.addCell(new Label(3, group.getRows().size() + 2, "检测日期:", labelFormat));
+                sheet.addCell(new Label(4, group.getRows().size() + 2, form.getSignatures().get(group.getGuid()).get("testDate"), labelFormat));
+                sheet.addCell(new Label(0, group.getRows().size() + 3, "审核人:", labelFormat));
+                sheet.addCell(new Label(1, group.getRows().size() + 3, form.getSignatures().get(group.getGuid()).get("reviewer"), labelFormat));
+                sheet.addCell(new Label(3, group.getRows().size() + 3, "检测日期:", labelFormat));
+                sheet.addCell(new Label(4, group.getRows().size() + 3, form.getSignatures().get(group.getGuid()).get("reviewDate"), labelFormat));
 
-            //备注
-            sheet.addCell(new Label(0, group.getRows().size() + 4, "备注:", labelFormat));
-            sheet.addCell(new Label(0, group.getRows().size() + 5, form.getSignatures().get(group.getGuid()).get("comments"), labelFormat));
+                //备注
+                sheet.addCell(new Label(0, group.getRows().size() + 4, "备注:", labelFormat));
+                sheet.addCell(new Label(0, group.getRows().size() + 5, form.getSignatures().get(group.getGuid()).get("comments"), labelFormat));
+            }
+
         }
 
         workbook.write();
