@@ -136,7 +136,15 @@ public class Form extends FormElement {
     }
 
     public Double getTotalScore() {
-        return totalScore;
+        double total = 0;
+        if (getValues() != null) {
+            for (ActualValue value : getValues()) {
+                if (value.getScore() != null) {
+                    total += value.getScore();
+                }
+            }
+        }
+        return total;
     }
 
     public void setTotalScore(Double totalScore) {
