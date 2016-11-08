@@ -4,6 +4,7 @@ import com.stardust.easyassess.assessment.dao.repositories.DataRepository;
 import com.stardust.easyassess.assessment.dao.repositories.FormRepository;
 import com.stardust.easyassess.assessment.dao.repositories.FormTemplateRepository;
 import com.stardust.easyassess.assessment.models.form.*;
+import jxl.CellView;
 import jxl.Workbook;
 import jxl.format.*;
 import jxl.format.Alignment;
@@ -120,7 +121,7 @@ public class FormServiceImpl extends AbstractEntityService<Form> implements Form
         }
         return form;
     }
-
+/*
     @Override
     public void exportToExcel(Form form, OutputStream outputStream) throws IOException, WriteException {
         FormTemplate template = formTemplateService.get(form.getAssessment().getTemplateGuid());
@@ -228,6 +229,160 @@ public class FormServiceImpl extends AbstractEntityService<Form> implements Form
 
         }
 
+        workbook.write();
+        workbook.close();
+    }*/
+
+    @Override
+    public void exportToExcel(Form form, OutputStream outputStream) throws IOException, WriteException {
+        FormTemplate template = formTemplateService.get(form.getAssessment().getTemplateGuid());
+        WritableWorkbook workbook = Workbook.createWorkbook(outputStream);
+        WritableFont boldFont = new WritableFont(WritableFont.ARIAL, 10, WritableFont.BOLD);
+        WritableFont normalFont = new WritableFont(WritableFont.ARIAL, 10, WritableFont.NO_BOLD);
+        WritableFont headerFont = new WritableFont(WritableFont.ARIAL, 15, WritableFont.BOLD);
+
+        WritableCellFormat headerFormat = new WritableCellFormat(headerFont);
+        headerFormat.setBorder(Border.NONE, BorderLineStyle.NONE);
+        headerFormat.setVerticalAlignment(VerticalAlignment.CENTRE);
+        headerFormat.setAlignment(Alignment.CENTRE);
+        headerFormat.setWrap(true);
+
+        WritableCellFormat sectionFormat = new WritableCellFormat(boldFont);
+        sectionFormat.setBorder(Border.NONE, BorderLineStyle.NONE);
+        sectionFormat.setVerticalAlignment(VerticalAlignment.CENTRE);
+        sectionFormat.setAlignment(Alignment.CENTRE);
+        sectionFormat.setWrap(true);
+        sectionFormat.setBackground(Colour.GREY_25_PERCENT);
+
+        WritableCellFormat titleFormat = new WritableCellFormat(boldFont);
+        titleFormat.setBorder(Border.NONE, BorderLineStyle.NONE);
+        titleFormat.setVerticalAlignment(VerticalAlignment.CENTRE);
+        titleFormat.setAlignment(Alignment.CENTRE);
+        titleFormat.setWrap(true);
+
+        WritableCellFormat labelFormat = new WritableCellFormat(normalFont);
+        labelFormat.setBorder(Border.NONE, BorderLineStyle.NONE);
+        labelFormat.setVerticalAlignment(VerticalAlignment.CENTRE);
+        labelFormat.setAlignment(Alignment.LEFT);
+        labelFormat.setWrap(true);
+        WritableSheet sheet = workbook.createSheet("结果", 0);
+
+        //header
+        sheet.addCell(new Label(0, 0, form.getAssessment().getName(), headerFormat));
+        sheet.mergeCells(0, 0, 5, 0);
+
+        //lab info
+        sheet.addCell(new Label(0, 1, "实验室名称:", titleFormat));
+        sheet.addCell(new Label(1, 1, form.getOwnerName(), labelFormat));
+        sheet.addCell(new Label(3, 1, "提交日期:", titleFormat));
+        sheet.addCell(new Label(4, 1, form.getSubmitDate().toString(), labelFormat));
+        sheet.mergeCells(4, 1, 5, 1);
+
+        // score
+        sheet.addCell(new Label(3, 2, "总分:", titleFormat));
+        sheet.addCell(new Label(4, 2, form.getTotalScore().toString(), labelFormat));
+        sheet.mergeCells(4, 2, 5, 2);
+
+        int currentRow = 4;
+        for (int i = 0; i < template.getGroups().size(); i++) {
+            GroupSection group = template.getGroups().get(i);
+            sheet.addCell(new Label(0, currentRow, group.getName(), sectionFormat));
+            sheet.mergeCells(0, currentRow, 5, currentRow++);
+            // render rows
+            for (int j = 0; j < group.getRows().size(); j++) {
+                GroupRow row = group.getRows().get(j);
+                sheet.addCell(new Label(0, currentRow, row.getItem().getSubject(), titleFormat));
+                sheet.mergeCells(0, currentRow, 0, group.getSpecimens().size() + currentRow);
+                sheet.addCell(new Label(1, currentRow, "样本代码", titleFormat));
+                sheet.addCell(new Label(2, currentRow, "盲样码", titleFormat));
+                sheet.addCell(new Label(3, currentRow, "你室结果", titleFormat));
+                sheet.addCell(new Label(4, currentRow, "正确结果", titleFormat));
+                sheet.addCell(new Label(5, currentRow, "分数", titleFormat));
+                currentRow++;
+                // render values
+                Double sujectScore = new Double(0);
+                for (int k = 0; k < group.getSpecimens().size(); k++) {
+                    Specimen specimen = group.getSpecimens().get(k);
+                    sheet.addCell(new Label(1, currentRow, specimen.getNumber(), labelFormat));
+                    for (ActualValue value : form.getValues()) {
+                        if (value.getSpecimenGuid().equals(specimen.getGuid())
+                                && value.getSubjectGuid().equals(row.getGuid())) {
+                            sheet.addCell(new Label(2, currentRow, value.getSpecimenCode(), labelFormat));
+                            sheet.addCell(new Label(3, currentRow, value.getValue(), labelFormat));
+                            Double score = value.getScore() == null ? 0 : value.getScore();
+                            sheet.addCell(new Label(5, currentRow, score.toString() , labelFormat));
+                            sujectScore += score;
+                            if (row.getOptionMap() != null && row.getOptionMap().containsKey(specimen.getGuid())) {
+                                ExpectionOption eo = row.getOptionMap().get(specimen.getGuid());
+                                sheet.addCell(new Label(4, currentRow, Arrays.toString(eo.getExpectedValues().toArray()), labelFormat));
+                            }
+                            break;
+                        }
+                    }
+                    currentRow++;
+                }
+
+                sheet.addCell(new Label(4, currentRow, "检测项得分:", titleFormat));
+                sheet.addCell(new Label(5, currentRow++, sujectScore.toString(), labelFormat));
+
+                // render codes
+                for (int k = 0; k < group.getCodeGroups().size(); k++) {
+                    CodeGroup codeGroup = group.getCodeGroups().get(k);
+                    for (Code code : form.getCodes()) {
+                        if (code.getCodeGroup().getGuid().equals(codeGroup.getGuid())
+                                && code.getSubjectGuid().equals(row.getGuid())) {
+                            sheet.addCell(new Label(1, currentRow, codeGroup.getName() + ":", titleFormat));
+                            sheet.addCell(new Label(2, currentRow, code.getCodeName(), labelFormat));
+                            sheet.mergeCells(2, currentRow, 5, currentRow);
+                            currentRow++;
+                            break;
+                        }
+                    }
+                }
+
+                if (form.getDetails() != null) {
+                    for (Map<String, String> details : form.getDetails()) {
+                        if (details.get("subjectGuid").equals(row.getGuid())) {
+                            if (details.containsKey("batchNumber")) {
+                                sheet.addCell(new Label(0, currentRow, "试剂批号:", titleFormat));
+                                sheet.addCell(new Label(1, currentRow, details.get("batchNumber"), labelFormat));
+                                sheet.mergeCells(1, currentRow, 5, currentRow++);
+                            }
+                            if (details.containsKey("expire")) {
+                                sheet.addCell(new Label(0, currentRow, "有效期:", titleFormat));
+                                sheet.addCell(new Label(1, currentRow, details.get("expire"), labelFormat));
+                                sheet.mergeCells(1, currentRow, 5, currentRow++);
+                            }
+                            break;
+                        }
+                    }
+                }
+
+                if (form.getSignatures().get(group.getGuid()) != null) {
+                    // 签名
+                    sheet.addCell(new Label(0, currentRow, "检测人:", titleFormat));
+                    sheet.addCell(new Label(1, currentRow, form.getSignatures().get(group.getGuid()).get("tester"), labelFormat));
+                    sheet.addCell(new Label(3, currentRow, "检测日期:", titleFormat));
+                    sheet.addCell(new Label(4, currentRow++, form.getSignatures().get(group.getGuid()).get("testDate"), labelFormat));
+                    sheet.addCell(new Label(0, currentRow, "审核人:", titleFormat));
+                    sheet.addCell(new Label(1, currentRow, form.getSignatures().get(group.getGuid()).get("reviewer"), labelFormat));
+                    sheet.addCell(new Label(3, currentRow, "检测日期:", titleFormat));
+                    sheet.addCell(new Label(4, currentRow++, form.getSignatures().get(group.getGuid()).get("reviewDate"), labelFormat));
+
+                    //备注
+                    sheet.addCell(new Label(0, currentRow, "备注:", titleFormat));
+                    sheet.addCell(new Label(1, currentRow, form.getSignatures().get(group.getGuid()).get("comments"), labelFormat));
+                    sheet.mergeCells(1, currentRow, 5, currentRow++);
+                }
+            }
+        }
+
+        sheet.setColumnView(0, 15);
+        sheet.setColumnView(1, 20);
+        sheet.setColumnView(2, 20);
+        sheet.setColumnView(3, 15);
+        sheet.setColumnView(4, 15);
+        sheet.setColumnView(4, 10);
         workbook.write();
         workbook.close();
     }
