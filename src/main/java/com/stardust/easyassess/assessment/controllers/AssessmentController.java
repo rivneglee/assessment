@@ -22,6 +22,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @CrossOrigin("*")
 @RestController
@@ -33,10 +34,10 @@ public class AssessmentController extends MaintenanceController<Assessment> {
 
     @Override
     @ResponseBody
-    @RequestMapping(method={RequestMethod.POST})
+    @RequestMapping(method = {RequestMethod.POST})
     public ViewJSONWrapper add(@RequestBody Assessment model) throws Exception {
         if (preAdd(model)) {
-            ((AssessmentService)getService()).createAssessment(model);
+            ((AssessmentService) getService()).createAssessment(model);
             return postAdd(getService().save(model));
         } else {
             return createEmptyResult();
@@ -83,27 +84,27 @@ public class AssessmentController extends MaintenanceController<Assessment> {
         return getApplicationContext().getBean(AssessmentService.class);
     }
 
-    @RequestMapping(path="/{id}/group/{group}/specimen/guid/{code}",
-            method={RequestMethod.GET})
+    @RequestMapping(path = "/{id}/group/{group}/specimen/guid/{code}",
+            method = {RequestMethod.GET})
     public ViewJSONWrapper getSpecimenGuid(@PathVariable String id, @PathVariable String group, @PathVariable String code) {
-        Specimen specimen = ((AssessmentService)getService()).findSpecimen(id, group ,code);
-        return new ViewJSONWrapper(specimen == null ? "":specimen.getGuid());
+        Specimen specimen = ((AssessmentService) getService()).findSpecimen(id, group, code);
+        return new ViewJSONWrapper(specimen == null ? "" : specimen.getGuid());
     }
 
-    @RequestMapping(path="/finalize/{id}",
-            method={RequestMethod.POST})
+    @RequestMapping(path = "/finalize/{id}",
+            method = {RequestMethod.POST})
     public ViewJSONWrapper finalize(@PathVariable String id) {
-        Assessment result = ((AssessmentService)getService()).finalizeAssessment(id);
+        Assessment result = ((AssessmentService) getService()).finalizeAssessment(id);
         return new ViewJSONWrapper(result);
     }
 
-    @RequestMapping(path="/mine/activated/list",
-            method={RequestMethod.GET})
+    @RequestMapping(path = "/mine/activated/list",
+            method = {RequestMethod.GET})
     public ViewJSONWrapper listActivated(@RequestParam(value = "page", defaultValue = "0") Integer page,
-                                @RequestParam(value = "size", defaultValue = "4") Integer size,
-                                @RequestParam(value = "sort", defaultValue = "id") String sort,
-                                @RequestParam(value = "filterField", defaultValue = "") String field,
-                                @RequestParam(value = "filterValue", defaultValue = "") String value ) throws MinistryOnlyException {
+                                         @RequestParam(value = "size", defaultValue = "4") Integer size,
+                                         @RequestParam(value = "sort", defaultValue = "id") String sort,
+                                         @RequestParam(value = "filterField", defaultValue = "") String field,
+                                         @RequestParam(value = "filterValue", defaultValue = "") String value) throws MinistryOnlyException {
 
         List<Selection> selections = new ArrayList();
         selections.add(new Selection(field, Selection.Operator.LIKE, value));
@@ -111,21 +112,26 @@ public class AssessmentController extends MaintenanceController<Assessment> {
         Owner owner = getNullableOwner();
         if (owner != null) {
             selections.add(new Selection("participants." + owner.getId(), Selection.Operator.EXSITS, true));
-            return new ViewJSONWrapper(getService().list(page, size , sort, selections));
+            return new ViewJSONWrapper(getService().list(page, size, sort, selections));
         } else {
             return new ViewJSONWrapper(null);
         }
     }
 
-    @RequestMapping(path="/excel/{id}",
-            method={RequestMethod.GET})
+    @RequestMapping(path = "/excel/{id}",
+            method = {RequestMethod.GET})
     public void export(@PathVariable String id, HttpServletResponse response) throws IOException, WriteException {
         Assessment assessment = getService().get(id);
         if (assessment.getId().equals(id)) {
             response.reset();
-            response.setHeader("Content-disposition", "attachment;filename=" +  java.net.URLEncoder.encode(assessment.getName(), "UTF-8") + ".xls");
+            response.setHeader("Content-disposition", "attachment;filename=" + java.net.URLEncoder.encode(assessment.getName(), "UTF-8") + ".xls");
             response.setContentType("application/msexcel");
-            ((AssessmentService)getService()).exportToExcel(assessment, response.getOutputStream());
+            ((AssessmentService) getService()).exportToExcel(assessment, response.getOutputStream());
         }
+    }
+
+    @RequestMapping(path = "/{id}/participant", method = RequestMethod.PUT)
+    public ViewJSONWrapper addParticipant(@PathVariable String id, @RequestBody Map<String, String> participant) throws Exception {
+        return new ViewJSONWrapper(((AssessmentService) getService()).addParticipant(id, participant.get("participant"), participant.get("participantName")));
     }
 }

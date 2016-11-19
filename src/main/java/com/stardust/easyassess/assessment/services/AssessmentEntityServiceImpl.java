@@ -58,9 +58,32 @@ public class AssessmentEntityServiceImpl extends AbstractEntityService<Assessmen
         assessmentRepository.save(assessment);
     }
 
+
+
+
     @Override
     public List<Assessment> findByParticipant(String participant) {
         return assessmentRepository.findByParticipant(Long.parseLong(participant));
+    }
+
+    @Override
+    public Form addParticipant(String assessmentId, String participant, String participantName) {
+        Assessment assessment = this.get(assessmentId);
+        if (assessment.getStatus().equals("A")) {
+            assessment.getParticipants().put(participant, participantName);
+            Form form = new Form();
+            form.setOwner(participant);
+            form.setAssessment(assessment);
+            form.setStatus("A");
+            form.setFormName(assessment.getName());
+            form.setTotalScore(new Double(0));
+            assessment.getForms().add(form);
+            formRepository.save(form);
+            assessmentRepository.save(assessment);
+            return form;
+        }
+
+        return null;
     }
 
     @Override
