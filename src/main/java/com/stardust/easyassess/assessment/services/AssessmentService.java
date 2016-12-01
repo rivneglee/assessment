@@ -21,6 +21,8 @@ public interface AssessmentService extends EntityService<Assessment> {
 
     Form addParticipant(String assessmentId, String participant, String participantName);
 
+    Form removeParticipant(String assessmentId, String participantId);
+
     Specimen findSpecimen(String assessmentId, String group,  String specimenCode);
 
     Assessment finalizeAssessment(String id);

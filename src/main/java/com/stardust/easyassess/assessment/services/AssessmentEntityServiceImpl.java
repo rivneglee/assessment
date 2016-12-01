@@ -87,6 +87,25 @@ public class AssessmentEntityServiceImpl extends AbstractEntityService<Assessmen
     }
 
     @Override
+    @Transactional
+    public Form removeParticipant(String assessmentId, String participantId) {
+        Assessment assessment = this.get(assessmentId);
+        if (assessment.getStatus().equals("A") && assessment.getParticipants().containsKey(participantId)) {
+            for (Form form : assessment.getForms()) {
+                if (form.getOwner().equals(participantId)) {
+                    assessment.getForms().remove(form);
+                    assessment.getParticipants().remove(participantId);
+                    formRepository.delete(form);
+                    assessmentRepository.save(assessment);
+                    return form;
+                }
+            }
+        }
+
+        return null;
+    }
+
+    @Override
     public Specimen findSpecimen(String assessmentId, String groupId, String specimenCode) {
         Assessment assessment = this.get(assessmentId);
         Set<String> specimenNumberSet = new HashSet();

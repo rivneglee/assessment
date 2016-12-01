@@ -134,4 +134,9 @@ public class AssessmentController extends MaintenanceController<Assessment> {
     public ViewJSONWrapper addParticipant(@PathVariable String id, @RequestBody Map<String, String> participant) throws Exception {
         return new ViewJSONWrapper(((AssessmentService) getService()).addParticipant(id, participant.get("participant"), participant.get("participantName")));
     }
+
+    @RequestMapping(path = "/{id}/participant/{participantId}", method = RequestMethod.DELETE)
+    public ViewJSONWrapper removeParticipant(@PathVariable String id, @PathVariable String participantId) throws Exception {
+        return new ViewJSONWrapper(((AssessmentService) getService()).removeParticipant(id, participantId));
+    }
 }
