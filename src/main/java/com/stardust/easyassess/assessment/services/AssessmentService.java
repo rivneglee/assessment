@@ -23,6 +23,8 @@ public interface AssessmentService extends EntityService<Assessment> {
 
     Form removeParticipant(String assessmentId, String participantId);
 
+    Assessment reopenAssessment(String assessmentId);
+
     Specimen findSpecimen(String assessmentId, String group,  String specimenCode);
 
     Assessment finalizeAssessment(String id);

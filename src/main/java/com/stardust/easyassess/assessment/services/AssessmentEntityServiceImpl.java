@@ -106,6 +106,23 @@ public class AssessmentEntityServiceImpl extends AbstractEntityService<Assessmen
     }
 
     @Override
+    public Assessment reopenAssessment(String assessmentId) {
+        Assessment assessment = this.get(assessmentId);
+        if (assessment.getStatus().equals("F")) {
+            for (Form form : assessment.getForms()) {
+                if (form.getStatus().equals("F")) {
+                    form.setStatus("C");
+                }
+                formRepository.save(form);
+            }
+            assessment.setStatus("A");
+            assessmentRepository.save(assessment);
+        }
+
+        return assessment;
+    }
+
+    @Override
     public Specimen findSpecimen(String assessmentId, String groupId, String specimenCode) {
         Assessment assessment = this.get(assessmentId);
         Set<String> specimenNumberSet = new HashSet();
