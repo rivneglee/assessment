@@ -8,9 +8,10 @@ public class SelectionScoreCalculator implements ScoreCalculator {
     @Override
     public Double calculate(ExpectionOption option, ActualValue value) {
         if (option.getExpectedValues() != null && option.getExpectedValues().size() > 0) {
-            ExpectedValue expectedValue = option.getExpectedValues().get(0);
-            if (expectedValue.getValue().equals(value.getValue())) {
-                return new Double(expectedValue.getWeight());
+            for (ExpectedValue expectedValue : option.getExpectedValues()) {
+                if (expectedValue.getValue().equals(value.getValue())) {
+                    return new Double(expectedValue.getWeight());
+                }
             }
         }
         return new Double(0);
