@@ -62,7 +62,7 @@ public class FormController extends MaintenanceController<Form> {
 
     @Override
     public ViewJSONWrapper get(@PathVariable String id) throws MinistryOnlyException {
-        Form form = getOwnerFormById(id);
+        Form form = getService().get(id);
 
         FormTemplateService templateService = getApplicationContext().getBean(FormTemplateService.class);
 
