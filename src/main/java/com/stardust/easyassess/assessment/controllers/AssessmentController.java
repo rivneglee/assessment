@@ -16,6 +16,7 @@ import jxl.write.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.ApplicationContext;
+import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
@@ -42,6 +43,12 @@ public class AssessmentController extends MaintenanceController<Assessment> {
         } else {
             return createEmptyResult();
         }
+    }
+
+    @Override
+    protected ViewJSONWrapper postList(Page<Assessment> page) throws Exception {
+        page.getContent().stream().forEach(assessment -> assessment.setForms(null));
+        return super.postList(page);
     }
 
     @Override
