@@ -161,7 +161,6 @@ public class AssessmentController extends MaintenanceController<Assessment> {
             form.setSignatures(null);
             form.setValues(null);
             form.setSubmitDate(null);
-            form.setTotalScore(null);
         }
 
         return new ViewJSONWrapper(assessment);
