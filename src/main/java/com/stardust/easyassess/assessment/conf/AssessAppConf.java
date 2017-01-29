@@ -64,7 +64,7 @@ public class AssessAppConf  {
         List<ServerAddress> hosts = new ArrayList();
         List<MongoCredential> credentials = new ArrayList();
         hosts.add(new ServerAddress(dbServer, 3717));
-        credentials.add(MongoCredential.createCredential(dbUser, defaultDB, dbPassword.toCharArray()));
+        credentials.add(MongoCredential.createCredential(dbUser, "admin", dbPassword.toCharArray()));
         Mongo mongo = new MongoClient(hosts, credentials);
         return mongo;
     }
