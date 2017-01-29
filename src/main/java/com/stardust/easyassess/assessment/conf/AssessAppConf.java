@@ -2,6 +2,8 @@ package com.stardust.easyassess.assessment.conf;
 
 import com.mongodb.Mongo;
 import com.mongodb.MongoClient;
+import com.mongodb.MongoCredential;
+import com.mongodb.ServerAddress;
 import com.stardust.easyassess.assessment.dao.router.MultiTenantMongoDbFactory;
 import com.stardust.easyassess.assessment.dao.router.TenantContext;
 import com.stardust.easyassess.assessment.services.GaussianValueScoreCalculator;
@@ -21,7 +23,9 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @PropertySource("classpath:application.properties")
@@ -36,6 +40,12 @@ public class AssessAppConf  {
     @Value("${assess.db.server}")
     private String dbServer;
 
+    @Value("${assess.db.user}")
+    private String dbUser;
+
+    @Value("${assess.db.password}")
+    private String dbPassword;
+
     @Bean
     public MongoTemplate mongoTemplate(final Mongo mongo) throws Exception {
         return new MongoTemplate(mongoDbFactory(mongo));
@@ -48,7 +58,15 @@ public class AssessAppConf  {
 
     @Bean
     public Mongo mongo() throws Exception {
-        return new MongoClient(dbServer);
+        if (dbUser == null || dbUser.isEmpty()) {
+            return new MongoClient(dbServer);
+        }
+        List<ServerAddress> hosts = new ArrayList();
+        List<MongoCredential> credentials = new ArrayList();
+        hosts.add(new ServerAddress(dbServer, 3717));
+        credentials.add(MongoCredential.createCredential(dbUser, defaultDB, dbPassword.toCharArray()));
+        Mongo mongo = new MongoClient(hosts, credentials);
+        return mongo;
     }
 
     @Autowired
