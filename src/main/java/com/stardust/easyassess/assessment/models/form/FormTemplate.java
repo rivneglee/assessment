@@ -17,6 +17,8 @@ public class FormTemplate extends FormElement {
 
 	private FormHeader header;
 
+	private FormFooter footer;
+
 	private List<GroupSection> groups;
 
 	public String getGuid() {
@@ -37,6 +39,14 @@ public class FormTemplate extends FormElement {
 
 	public void setHeader(FormHeader header) {
 		this.header = header;
+	}
+
+	public FormFooter getFooter() {
+		return footer;
+	}
+
+	public void setFooter(FormFooter footer) {
+		this.footer = footer;
 	}
 
 	public List<GroupSection> getGroups() {
