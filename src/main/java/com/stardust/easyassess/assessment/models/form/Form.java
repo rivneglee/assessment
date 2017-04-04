@@ -136,6 +136,9 @@ public class Form extends FormElement {
     }
 
     public Double getTotalScore() {
+        if (totalScore != null && totalScore > 0) {
+            return totalScore;
+        }
         double total = 0;
         if (getValues() != null) {
             for (ActualValue value : getValues()) {
@@ -144,7 +147,9 @@ public class Form extends FormElement {
                 }
             }
         }
-        return total;
+
+        totalScore = total;
+        return totalScore;
     }
 
     public void setTotalScore(Double totalScore) {
