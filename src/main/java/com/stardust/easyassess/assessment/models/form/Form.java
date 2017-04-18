@@ -27,6 +27,8 @@ public class Form extends FormElement {
 
     private Double totalScore;
 
+    private String attachment;
+
     @JsonFormat(pattern="yyyy-MM-dd")
     private Date submitDate;
 
@@ -64,6 +66,14 @@ public class Form extends FormElement {
 
     public List<Code> getCodes() {
         return codes;
+    }
+
+    public String getAttachment() {
+        return attachment;
+    }
+
+    public void setAttachment(String attachment) {
+        this.attachment = attachment;
     }
 
     public void setCodes(List<Code> codes) {

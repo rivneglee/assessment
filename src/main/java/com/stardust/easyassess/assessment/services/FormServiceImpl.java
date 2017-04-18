@@ -1,5 +1,6 @@
 package com.stardust.easyassess.assessment.services;
 
+import com.stardust.easyassess.assessment.common.OSSBucketAccessor;
 import com.stardust.easyassess.assessment.dao.repositories.DataRepository;
 import com.stardust.easyassess.assessment.dao.repositories.FormRepository;
 import com.stardust.easyassess.assessment.dao.repositories.FormTemplateRepository;
@@ -19,6 +20,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.reflect.Array;
 import java.util.*;
@@ -39,6 +41,15 @@ public class FormServiceImpl extends AbstractEntityService<Form> implements Form
     @Override
     protected DataRepository getRepository() {
         return formRepository;
+    }
+
+    @Override
+    public Form save(Form form) {
+        Form existing = this.get(form.getId());
+        if (existing != null) {
+            form.setAssessment(existing.getAssessment());
+        }
+        return super.save(form);
     }
 
     @Transactional
@@ -385,5 +396,21 @@ public class FormServiceImpl extends AbstractEntityService<Form> implements Form
         sheet.setColumnView(4, 10);
         workbook.write();
         workbook.close();
+    }
+
+    @Override
+    public String addAttachment(String formId, InputStream inputStream) {
+        Form form = formRepository.findOne(formId);
+        if (form != null) {
+           String link = (new OSSBucketAccessor()).put("assess-bucket", "assessment-attachment/" + formId, inputStream);
+           if (link != null && !link.isEmpty()) {
+                form.setAttachment(link);
+                formRepository.save(form);
+           }
+
+           return link;
+        }
+
+        return null;
     }
 }

@@ -1,13 +1,10 @@
 package com.stardust.easyassess.assessment.controllers;
 
 
-import com.stardust.easyassess.assessment.models.Assessment;
+import com.stardust.easyassess.assessment.common.OSSBucketAccessor;
 import com.stardust.easyassess.assessment.models.Owner;
-import com.stardust.easyassess.assessment.models.form.ActualValue;
-import com.stardust.easyassess.assessment.models.form.Code;
 import com.stardust.easyassess.assessment.models.form.Form;
 import com.stardust.easyassess.assessment.models.form.FormData;
-import com.stardust.easyassess.assessment.services.AssessmentService;
 import com.stardust.easyassess.assessment.services.EntityService;
 import com.stardust.easyassess.assessment.services.FormService;
 import com.stardust.easyassess.assessment.services.FormTemplateService;
@@ -19,8 +16,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.ApplicationContext;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
+import java.io.File;
 import java.io.IOException;
 import java.util.*;
 
@@ -47,6 +46,17 @@ public class FormController extends MaintenanceController<Form> {
         form.setSignatures(data.getSignatures());
         ((FormService)getService()).submit(form);
         return new ViewJSONWrapper(form);
+    }
+
+    @RequestMapping(path="/{id}/attachment",
+            method={RequestMethod.POST})
+    public ViewJSONWrapper uploadAttachment(@PathVariable String id, @RequestParam("attachment") MultipartFile file) throws MinistryOnlyException, IOException {
+        if(!file.isEmpty()) {
+            String link = ((FormService)getService()).addAttachment(id, file.getInputStream());
+            return new ViewJSONWrapper(link);
+        }
+
+        return new ViewJSONWrapper(null);
     }
 
     @RequestMapping(path="/reject/{id}",
