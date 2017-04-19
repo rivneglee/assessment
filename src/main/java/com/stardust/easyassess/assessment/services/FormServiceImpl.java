@@ -399,10 +399,10 @@ public class FormServiceImpl extends AbstractEntityService<Form> implements Form
     }
 
     @Override
-    public String addAttachment(String formId, InputStream inputStream) {
+    public String addAttachment(String formId, String fileName, InputStream inputStream) {
         Form form = formRepository.findOne(formId);
         if (form != null) {
-           String link = (new OSSBucketAccessor()).put("assess-bucket", "assessment-attachment/" + formId, inputStream);
+           String link = (new OSSBucketAccessor()).put("assess-bucket", "assessment-attachment/" + fileName, inputStream);
            if (link != null && !link.isEmpty()) {
                 form.setAttachment(link);
                 formRepository.save(form);

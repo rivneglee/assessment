@@ -52,7 +52,12 @@ public class FormController extends MaintenanceController<Form> {
             method={RequestMethod.POST})
     public ViewJSONWrapper uploadAttachment(@PathVariable String id, @RequestParam("attachment") MultipartFile file) throws MinistryOnlyException, IOException {
         if(!file.isEmpty()) {
-            String link = ((FormService)getService()).addAttachment(id, file.getInputStream());
+            String fileName=file.getOriginalFilename();
+            if (fileName.contains(".")) {
+                String[] parts = fileName.split("\\.");
+                fileName = id + "." + parts[parts.length - 1];
+            }
+            String link = ((FormService)getService()).addAttachment(id, fileName, file.getInputStream());
             return new ViewJSONWrapper(link);
         }
 
