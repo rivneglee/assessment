@@ -55,7 +55,7 @@ public class FormServiceImpl extends AbstractEntityService<Form> implements Form
     @Transactional
     @Override
     public Form submit(Form form) {
-        if (form != null && form.getStatus().equals("A")) {
+        if (form != null && (form.getStatus().equals("A") || form.getStatus().equals("S"))) {
 
             FormTemplate template = templateRepository.findOne(form.getAssessment().getTemplateGuid());
             form.setStatus("C");
