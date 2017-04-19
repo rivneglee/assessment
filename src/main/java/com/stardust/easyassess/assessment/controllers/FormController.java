@@ -1,7 +1,6 @@
 package com.stardust.easyassess.assessment.controllers;
 
 
-import com.stardust.easyassess.assessment.common.OSSBucketAccessor;
 import com.stardust.easyassess.assessment.models.Owner;
 import com.stardust.easyassess.assessment.models.form.Form;
 import com.stardust.easyassess.assessment.models.form.FormData;
@@ -19,7 +18,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
-import java.io.File;
 import java.io.IOException;
 import java.util.*;
 
