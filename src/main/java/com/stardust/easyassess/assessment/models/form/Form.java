@@ -122,6 +122,20 @@ public class Form extends FormElement {
         assessment.setTemplateGuid(this.assessment.getTemplateGuid());
         assessment.setOwner(this.assessment.getOwner());
         assessment.setOwnerName(this.assessment.getOwnerName());
+
+        Map<String, List<String>> codeMap = new HashMap();
+        for (String specimenNumber
+                : this.assessment.getSpecimenCodes().keySet()) {
+            List<String> codesList = this.assessment.getSpecimenCodes().get(specimenNumber);
+
+            if (codesList.size() == 1
+                    && specimenNumber.equals(codesList.get(0))) {
+                codeMap.put(specimenNumber, codesList);
+            }
+        }
+
+        assessment.setSpecimenCodes(codeMap);
+
         return assessment;
     }
 
