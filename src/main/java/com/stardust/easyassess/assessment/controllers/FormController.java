@@ -34,6 +34,15 @@ public class FormController extends MaintenanceController<Form> {
         return getApplicationContext().getBean(FormService.class);
     }
 
+    @RequestMapping(path="/{id}/score/{score}",
+            method={RequestMethod.POST})
+    public ViewJSONWrapper updateScore(@PathVariable String id, @PathVariable double score) throws MinistryOnlyException {
+        Form form = getService().get(id);
+        form.setAdditionalScore(score);
+        getService().save(form);
+        return new ViewJSONWrapper(form);
+    }
+
     @RequestMapping(path="/submit/{id}",
             method={RequestMethod.PUT})
     public ViewJSONWrapper submit(@PathVariable String id, @RequestBody FormData data) throws MinistryOnlyException {

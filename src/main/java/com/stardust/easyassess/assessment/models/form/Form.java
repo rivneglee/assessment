@@ -25,7 +25,9 @@ public class Form extends FormElement {
 
     private String formName;
 
-    private Double totalScore;
+    private Double totalScore = new Double(0);
+
+    private Double additionalScore = new Double(0);
 
     private String attachment;
 
@@ -157,6 +159,14 @@ public class Form extends FormElement {
 
     public void setSubmitDate(Date submitDate) {
         this.submitDate = submitDate;
+    }
+
+    public Double getAdditionalScore() {
+        return additionalScore;
+    }
+
+    public void setAdditionalScore(Double additionalScore) {
+        this.additionalScore = additionalScore;
     }
 
     public Double getTotalScore() {
