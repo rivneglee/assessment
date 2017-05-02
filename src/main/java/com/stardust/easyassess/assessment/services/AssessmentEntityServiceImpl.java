@@ -290,7 +290,7 @@ public class AssessmentEntityServiceImpl extends AbstractEntityService<Assessmen
                 ScoreCalculator calculator = calculators.get(expectation.getType());
                 return calculator.calculate(expectation, av);
             } catch (Exception e){
-                return new Double(-1);
+                return new Double(0);
             }
         }
 
