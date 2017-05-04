@@ -1,9 +1,11 @@
 package com.stardust.easyassess.assessment.services;
 
 import com.stardust.easyassess.assessment.common.OSSBucketAccessor;
+import com.stardust.easyassess.assessment.dao.repositories.AssessmentRepository;
 import com.stardust.easyassess.assessment.dao.repositories.DataRepository;
 import com.stardust.easyassess.assessment.dao.repositories.FormRepository;
 import com.stardust.easyassess.assessment.dao.repositories.FormTemplateRepository;
+import com.stardust.easyassess.assessment.models.Owner;
 import com.stardust.easyassess.assessment.models.form.*;
 import jxl.CellView;
 import jxl.Workbook;
@@ -37,6 +39,9 @@ public class FormServiceImpl extends AbstractEntityService<Form> implements Form
 
     @Autowired
     FormTemplateService formTemplateService;
+
+    @Autowired
+    AssessmentRepository assessmentRepository;
 
     @Override
     protected DataRepository getRepository() {
@@ -412,5 +417,14 @@ public class FormServiceImpl extends AbstractEntityService<Form> implements Form
         }
 
         return null;
+    }
+
+    @Override
+    public void updateOwnerName(Owner owner) {
+        List<Form> forms = formRepository.findFormsByOwner(owner.getId());
+        for (Form form : forms) {
+            form.getAssessment().getParticipants().put(owner.getId(), owner.getName());
+            assessmentRepository.save(form.getAssessment());
+        }
     }
 }

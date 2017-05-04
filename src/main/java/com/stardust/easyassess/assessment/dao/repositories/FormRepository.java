@@ -12,4 +12,6 @@ public interface FormRepository extends DataRepository<Form, String> {
     default Class<Form> getEntityClass() {
         return Form.class;
     }
+
+    List<Form> findFormsByOwner(String owner);
 }

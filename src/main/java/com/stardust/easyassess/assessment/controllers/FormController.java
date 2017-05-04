@@ -7,6 +7,7 @@ import com.stardust.easyassess.assessment.models.form.FormData;
 import com.stardust.easyassess.assessment.services.EntityService;
 import com.stardust.easyassess.assessment.services.FormService;
 import com.stardust.easyassess.assessment.services.FormTemplateService;
+import com.stardust.easyassess.core.exception.ESAppException;
 import com.stardust.easyassess.core.exception.MinistryOnlyException;
 import com.stardust.easyassess.core.presentation.ViewJSONWrapper;
 import com.stardust.easyassess.core.query.Selection;
@@ -19,6 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.text.ParseException;
 import java.util.*;
 
 @CrossOrigin("*")
@@ -154,5 +156,12 @@ public class FormController extends MaintenanceController<Form> {
             selections.add(new Selection("owner", Selection.Operator.EQUAL, getOwner().getId()));
         }
         return new ViewJSONWrapper(getService().list(page, size , sort, selections));
+    }
+
+    @RequestMapping(path="/owner",
+            method={RequestMethod.PUT})
+    public ViewJSONWrapper updateOwner(@RequestBody Owner owner) throws ESAppException, ParseException {
+        ((FormService)getService()).updateOwnerName(owner);
+        return new ViewJSONWrapper(owner);
     }
 }
