@@ -261,6 +261,15 @@ public class AssessmentEntityServiceImpl extends AbstractEntityService<Assessmen
                             }
                         }
                     }
+
+                    // render details
+                    int columnIndex = group.getSpecimens().size() + 3 + group.getCodeGroups().size() + 1;
+                    for (Map<String, String> detail : form.getDetails()) {
+                        if (row.getGuid().equals(detail.get("subjectGuid"))) {
+                            sheet.addCell(new Label(columnIndex, (j * assessment.getForms().size()) + h + 1, detail.get("batchNumber"), labelFormat));
+                            sheet.addCell(new Label(columnIndex + 1, (j * assessment.getForms().size()) + h + 1, detail.get("expire"), labelFormat));
+                        }
+                    }
                 }
 
             }
@@ -277,6 +286,9 @@ public class AssessmentEntityServiceImpl extends AbstractEntityService<Assessmen
                 sheet.addCell(new Label(j + group.getSpecimens().size() + 3, 0, codeGroup.getName(), labelFormat));
             }
 
+            // render details title
+            sheet.addCell(new Label(group.getSpecimens().size() + 3 + group.getCodeGroups().size() + 1, 0, "试剂批号", labelFormat));
+            sheet.addCell(new Label(group.getSpecimens().size() + 3 + group.getCodeGroups().size() + 2, 0, "试剂有效期", labelFormat));
         }
 
         workbook.write();
