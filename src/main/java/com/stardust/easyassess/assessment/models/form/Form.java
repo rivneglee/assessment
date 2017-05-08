@@ -29,6 +29,8 @@ public class Form extends FormElement {
 
     private Double additionalScore = new Double(0);
 
+    private String additationScoreDesc;
+
     private String attachment;
 
     @JsonFormat(pattern="yyyy-MM-dd")
@@ -188,6 +190,14 @@ public class Form extends FormElement {
 
     public void setTotalScore(Double totalScore) {
         this.totalScore = totalScore;
+    }
+
+    public String getAdditationScoreDesc() {
+        return additationScoreDesc;
+    }
+
+    public void setAdditationScoreDesc(String additationScoreDesc) {
+        this.additationScoreDesc = additationScoreDesc;
     }
 }
 
