@@ -299,7 +299,15 @@ public class FormServiceImpl extends AbstractEntityService<Form> implements Form
         sheet.addCell(new Label(4, 2, form.getTotalScore().toString(), labelFormat));
         sheet.mergeCells(4, 2, 5, 2);
 
-        int currentRow = 4;
+        sheet.addCell(new Label(3, 3, "附加分:", titleFormat));
+        sheet.addCell(new Label(4, 3, form.getAdditionalScore().toString(), labelFormat));
+        sheet.mergeCells(4, 3, 5, 3);
+
+        sheet.addCell(new Label(3, 4, "附加分说明:", titleFormat));
+        sheet.addCell(new Label(4, 4, form.getAdditationScoreDesc(), labelFormat));
+        sheet.mergeCells(4, 4, 5, 4);
+
+        int currentRow = 6;
         for (int i = 0; i < template.getGroups().size(); i++) {
             GroupSection group = template.getGroups().get(i);
             sheet.addCell(new Label(0, currentRow, group.getName(), sectionFormat));
