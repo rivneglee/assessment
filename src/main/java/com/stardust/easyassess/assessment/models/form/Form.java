@@ -193,6 +193,7 @@ public class Form extends FormElement {
     }
 
     public String getAdditationScoreDesc() {
+        if (additationScoreDesc == null) return "";
         return additationScoreDesc;
     }
 
