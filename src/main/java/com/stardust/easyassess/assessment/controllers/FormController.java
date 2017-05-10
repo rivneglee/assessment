@@ -1,6 +1,7 @@
 package com.stardust.easyassess.assessment.controllers;
 
 
+import com.stardust.easyassess.assessment.models.AdditionalScore;
 import com.stardust.easyassess.assessment.models.Owner;
 import com.stardust.easyassess.assessment.models.form.Form;
 import com.stardust.easyassess.assessment.models.form.FormData;
@@ -38,12 +39,10 @@ public class FormController extends MaintenanceController<Form> {
 
     @RequestMapping(path="/{id}/score",
             method={RequestMethod.POST})
-    public ViewJSONWrapper updateScore(@PathVariable String id,
-                                       @RequestParam double score,
-                                       @RequestParam String desc) throws MinistryOnlyException {
+    public ViewJSONWrapper updateScore(@PathVariable String id, @RequestBody AdditionalScore score) throws MinistryOnlyException {
         Form form = getService().get(id);
-        form.setAdditionalScore(score);
-        form.setAdditationScoreDesc(desc);
+        form.setAdditionalScore(score.getScore());
+        form.setAdditationScoreDesc(score.getDesc());
         getService().save(form);
         return new ViewJSONWrapper(form);
     }
