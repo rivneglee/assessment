@@ -61,6 +61,18 @@ public class Form extends FormElement {
     }
 
     public List<ActualValue> getValues() {
+        String countIn = "";
+        if (values != null) {
+            for (int i = 0; i < values.size(); i++) {
+                ActualValue value = values.get(i);
+                // double check the duplication
+                if (countIn.contains(value.getSubjectGuid() + "*" + value.getSpecimenGuid() + "|")) {
+                    values.remove(value);
+                } else if (value.getScore() != null) {
+                    countIn += value.getSubjectGuid() + "*" + value.getSpecimenGuid() + "|";
+                }
+            }
+        }
         return values;
     }
 
@@ -177,16 +189,10 @@ public class Form extends FormElement {
         }
         double total = 0;
         if (getValues() != null) {
-            String countIn = "";
-            for (int i = 0; i < getValues().size(); i++) {
-                ActualValue value = getValues().get(i);
-                // double check the duplication
-                if (countIn.contains(value.getSubjectGuid() + "*" + value.getSpecimenGuid() + "|")) {
-                    getValues().remove(value);
-                } else if (value.getScore() != null) {
+            for (ActualValue value : getValues()) {
+               if (value.getScore() != null) {
                     total += value.getScore();
-                    countIn += value.getSubjectGuid() + "*" + value.getSpecimenGuid() + "|";
-                }
+               }
             }
         }
 
