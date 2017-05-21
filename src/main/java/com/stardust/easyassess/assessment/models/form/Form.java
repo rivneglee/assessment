@@ -177,9 +177,15 @@ public class Form extends FormElement {
         }
         double total = 0;
         if (getValues() != null) {
-            for (ActualValue value : getValues()) {
-                if (value.getScore() != null) {
+            String countIn = "";
+            for (int i = 0; i < getValues().size(); i++) {
+                ActualValue value = getValues().get(i);
+                // double check the duplication
+                if (countIn.contains(value.getSubjectGuid() + "*" + value.getSpecimenGuid() + "|")) {
+                    getValues().remove(value);
+                } else if (value.getScore() != null) {
                     total += value.getScore();
+                    countIn += value.getSubjectGuid() + "*" + value.getSpecimenGuid() + "|";
                 }
             }
         }
