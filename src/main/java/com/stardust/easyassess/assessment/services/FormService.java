@@ -15,7 +15,7 @@ public interface FormService extends EntityService<Form> {
 
     void exportToExcel(Form form, OutputStream outputStream) throws IOException, WriteException;
 
-    String addAttachment(String formId, String fileName, InputStream inputStream);
+    String addAttachment(String formId, String fileType, InputStream inputStream);
 
     void updateOwnerName(Owner owner);
 }

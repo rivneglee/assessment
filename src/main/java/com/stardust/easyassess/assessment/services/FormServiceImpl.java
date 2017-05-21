@@ -25,6 +25,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.reflect.Array;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 @Service
@@ -412,9 +413,11 @@ public class FormServiceImpl extends AbstractEntityService<Form> implements Form
     }
 
     @Override
-    public String addAttachment(String formId, String fileName, InputStream inputStream) {
+    public String addAttachment(String formId, String fileType, InputStream inputStream) {
         Form form = formRepository.findOne(formId);
         if (form != null) {
+           SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+           String fileName = form.getFormName() + "-" + dateFormat.format(form.getAssessment().getStartDate()) + "-" + form.getOwnerName() + "." + fileType;
            String link = (new OSSBucketAccessor()).put("assess-bucket", "assessment-attachment/" + fileName, inputStream);
            if (link != null && !link.isEmpty()) {
                 form.setAttachment(link);
