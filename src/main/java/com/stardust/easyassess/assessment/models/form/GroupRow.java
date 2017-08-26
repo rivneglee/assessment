@@ -8,7 +8,17 @@ public class GroupRow extends FormElement {
 	private String guid;
 	
 	private TestSubject item;
-	
+
+	private boolean disableCodeGroup;
+
+	public boolean isDisableCodeGroup() {
+		return disableCodeGroup;
+	}
+
+	public void setDisableCodeGroup(boolean disableCodeGroup) {
+		this.disableCodeGroup = disableCodeGroup;
+	}
+
 	private Map<String, ExpectionOption> optionMap = new HashMap<String, ExpectionOption>();
 
 	public String getGuid() {
