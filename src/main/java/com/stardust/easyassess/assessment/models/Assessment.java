@@ -31,7 +31,7 @@ public class Assessment extends DataModel {
     private String certTitle;
     private String certSubTitle;
     private String certIssuer;
-    private Double passScore;
+    private Double passScore = new Double(60);
 
     public String getCertIssuer() {
         return certIssuer;

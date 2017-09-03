@@ -216,14 +216,13 @@ public class Form extends FormElement {
 
     @Transient
     public boolean isQualifiedForCert() {
-//        if (status.equals("F")
-//                && getAssessment().isEnableCert()
-//                && getAssessment().getStatus().equals("F")
-//                && getTotalScore().compareTo(getAssessment().getPassScore()) >=0) {
-//            return true;
-//        }
-//        return false;
-        return true;
+        if ("F".equals(status)
+                && getAssessment().isEnableCert()
+                && "F".equals(getAssessment().getStatus())
+                && getTotalScore().compareTo(getAssessment().getPassScore()) >= 0) {
+            return true;
+        }
+        return false;
     }
 }
 
