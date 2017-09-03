@@ -3,7 +3,6 @@ package com.stardust.easyassess.assessment.services;
 
 import com.stardust.easyassess.assessment.models.CertificationModel;
 import net.glxn.qrgen.QRCode;
-import net.glxn.qrgen.image.ImageType;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -110,7 +109,7 @@ public class ImageCertificationGenerator implements CertificationGenerator, Imag
     private void drawTitle(String title, Graphics2D g2d) {
         final int fontSize = 30;
 
-        g2d.setFont(new Font("Courier New", Font.PLAIN, fontSize));
+        g2d.setFont(new Font("宋体", Font.PLAIN, fontSize));
 
         g2d.drawString(title, getHorizontalCenter(title, g2d),  120 + getOffset().getTop());
     }
@@ -118,7 +117,7 @@ public class ImageCertificationGenerator implements CertificationGenerator, Imag
     private void drawSubTitle(String subTitle, Graphics2D g2d) {
         final int fontSize = 20;
 
-        g2d.setFont(new Font("Courier New", Font.PLAIN, fontSize));
+        g2d.setFont(new Font("宋体", Font.PLAIN, fontSize));
 
         g2d.drawString(subTitle, getHorizontalCenter(subTitle, g2d), 150 + getOffset().getTop());
     }
@@ -126,7 +125,7 @@ public class ImageCertificationGenerator implements CertificationGenerator, Imag
     private void drawOwner(String owner, Graphics2D g2d) {
         final int fontSize = 25;
 
-        g2d.setFont(new Font("Courier New", Font.BOLD, fontSize));
+        g2d.setFont(new Font("宋体", Font.BOLD, fontSize));
 
         g2d.drawString(owner + ":", 160 + getOffset().getLeft(), 200 + getOffset().getTop());
     }
@@ -134,7 +133,7 @@ public class ImageCertificationGenerator implements CertificationGenerator, Imag
     private void drawCommentLabel(String label, Graphics2D g2d) {
         final int fontSize = 18;
 
-        g2d.setFont(new Font("Courier New", Font.BOLD, fontSize));
+        g2d.setFont(new Font("宋体", Font.BOLD, fontSize));
 
         g2d.drawString(label + ":", 160 + getOffset().getLeft(), 400 + getOffset().getTop());
     }
@@ -142,7 +141,7 @@ public class ImageCertificationGenerator implements CertificationGenerator, Imag
     private void drawComment(String comment, Graphics2D g2d) {
         final int fontSize = 18;
 
-        g2d.setFont(new Font("Courier New", Font.BOLD, fontSize));
+        g2d.setFont(new Font("宋体", Font.BOLD, fontSize));
 
         g2d.drawString(comment, 160 + getOffset().getLeft(), 450 + getOffset().getTop());
     }
@@ -150,7 +149,7 @@ public class ImageCertificationGenerator implements CertificationGenerator, Imag
     private void drawIssuer(String label, String issuer, Graphics2D g2d) {
         final int fontSize = 18;
 
-        g2d.setFont(new Font("Courier New", Font.BOLD, fontSize));
+        g2d.setFont(new Font("宋体", Font.BOLD, fontSize));
 
         final int textWidth = Math.max(g2d.getFontMetrics().stringWidth(label), g2d.getFontMetrics().stringWidth(issuer));
 
@@ -173,7 +172,7 @@ public class ImageCertificationGenerator implements CertificationGenerator, Imag
         int month = calendar.get(Calendar.MONTH);
         int day = calendar.get(Calendar.DAY_OF_MONTH);
 
-        g2d.setFont(new Font("Courier New", Font.BOLD, fontSize));
+        g2d.setFont(new Font("宋体", Font.BOLD, fontSize));
 
         g2d.drawString(year + "年 " + month + "月 " + day + "日", 160 + getOffset().getLeft(), 500 + getOffset().getTop());
     }
@@ -189,7 +188,7 @@ public class ImageCertificationGenerator implements CertificationGenerator, Imag
 
         StringBuilder sb = new StringBuilder();
 
-        g2d.setFont(new Font("Courier New", Font.PLAIN, fontSize));
+        g2d.setFont(new Font("宋体", Font.PLAIN, fontSize));
 
         if (g2d.getFontMetrics().stringWidth(body) > maxLineWidth) {
             for (char c : body.toCharArray()) {
