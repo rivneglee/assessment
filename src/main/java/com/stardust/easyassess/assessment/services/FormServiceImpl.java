@@ -5,6 +5,7 @@ import com.stardust.easyassess.assessment.dao.repositories.AssessmentRepository;
 import com.stardust.easyassess.assessment.dao.repositories.DataRepository;
 import com.stardust.easyassess.assessment.dao.repositories.FormRepository;
 import com.stardust.easyassess.assessment.dao.repositories.FormTemplateRepository;
+import com.stardust.easyassess.assessment.models.CertificationModel;
 import com.stardust.easyassess.assessment.models.Owner;
 import com.stardust.easyassess.assessment.models.form.*;
 import jxl.CellView;
@@ -16,17 +17,27 @@ import jxl.format.BorderLineStyle;
 import jxl.format.Colour;
 import jxl.format.VerticalAlignment;
 import jxl.write.*;
+import jxl.write.Label;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Scope;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.imageio.ImageIO;
+import java.awt.*;
+import java.awt.Font;
+import java.awt.image.BufferedImage;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.reflect.Array;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.List;
 
 @Service
 @Scope("request")
@@ -44,9 +55,23 @@ public class FormServiceImpl extends AbstractEntityService<Form> implements Form
     @Autowired
     AssessmentRepository assessmentRepository;
 
+    @Value("${assess.cert.server}")
+    String certServer;
+
     @Override
     protected DataRepository getRepository() {
         return formRepository;
+    }
+
+    private static Map<String, BufferedImage> certificationImages = new HashMap<>();
+
+    static {
+        try {
+            BufferedImage bgImage = ImageIO.read(FormServiceImpl.class.getClassLoader().getResourceAsStream("static/cert-bg.jpg"));
+            certificationImages.put("default", bgImage);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -436,6 +461,27 @@ public class FormServiceImpl extends AbstractEntityService<Form> implements Form
         for (Form form : forms) {
             form.getAssessment().getParticipants().put(owner.getId(), owner.getName());
             assessmentRepository.save(form.getAssessment());
+        }
+    }
+
+    @Override
+    public void generateAssessmentCertification(String formId, OutputStream outputStream) throws IOException {
+        Form form = get(formId);
+        if (form != null) {
+            CertificationGenerator certGenerator = new ImageCertificationGenerator(ImageCertificationGenerator.Style.DEFAULT);
+            CertificationModel certModel = new CertificationModel();
+
+            certModel.setTitle("室间考评证书");
+            certModel.setSubTitle("Certification for EQA");
+            certModel.setOwner(form.getOwnerName());
+            certModel.setIssuerLabel("颁发机构");
+            certModel.setIssuer(form.getAssessment().getOwnerName());
+            certModel.setContent("你单位通过了" + form.getAssessment().getName() + "，特此颁发次证书.");
+            certModel.setCommentLabel("注 合格项目");
+            certModel.setCommentContent("肝功三项, 肝炎筛查");
+            certModel.setDate(new Date());
+            certModel.setUrl(certServer + "default/assess/form/" + formId + "/certification");
+            certGenerator.generate(certModel, outputStream);
         }
     }
 }

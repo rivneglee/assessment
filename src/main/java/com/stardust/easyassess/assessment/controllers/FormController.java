@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
+import java.io.*;
 import java.text.ParseException;
 import java.util.*;
 
@@ -165,5 +165,11 @@ public class FormController extends MaintenanceController<Form> {
     public ViewJSONWrapper updateOwner(@RequestBody Owner owner) throws ESAppException, ParseException {
         ((FormService)getService()).updateOwnerName(owner);
         return new ViewJSONWrapper(owner);
+    }
+
+    @RequestMapping(path="/{id}/certification",
+            method={RequestMethod.GET})
+    public void generateCertification(@PathVariable String id, HttpServletResponse response) throws IOException, WriteException {
+        ((FormService)getService()).generateAssessmentCertification(id, response.getOutputStream());
     }
 }

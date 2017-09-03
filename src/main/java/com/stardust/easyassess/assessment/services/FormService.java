@@ -18,4 +18,6 @@ public interface FormService extends EntityService<Form> {
     String addAttachment(String formId, String fileType, InputStream inputStream);
 
     void updateOwnerName(Owner owner);
+
+    void generateAssessmentCertification(String formId, OutputStream outputStream) throws IOException;
 }

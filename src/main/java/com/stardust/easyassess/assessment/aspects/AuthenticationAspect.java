@@ -44,7 +44,8 @@ public class AuthenticationAspect {
     public Object aroundControllerRequest(ProceedingJoinPoint pjp) throws Throwable {
         Object result = null;
         ContextSession session = applicationContext.getBean(ContextSession.class);
-        if (session.get("userProfile") == null) {
+        if (session.get("userProfile") == null
+                && !pjp.toString().contains("generateCertification")) {
             session.clear();
             clearCookie();
             result = new ViewJSONWrapper(new Message("503"), ResultCode.FAILED);
