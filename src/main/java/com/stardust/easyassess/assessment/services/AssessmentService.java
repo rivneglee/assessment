@@ -2,6 +2,7 @@ package com.stardust.easyassess.assessment.services;
 
 
 import com.stardust.easyassess.assessment.models.Assessment;
+import com.stardust.easyassess.assessment.models.CertificationModel;
 import com.stardust.easyassess.assessment.models.form.ActualValue;
 import com.stardust.easyassess.assessment.models.form.Form;
 import com.stardust.easyassess.assessment.models.form.Specimen;
@@ -32,4 +33,6 @@ public interface AssessmentService extends EntityService<Assessment> {
     void finalizeAssessment(Assessment assessment);
 
     void exportToExcel(Assessment assessment, OutputStream outputStream) throws IOException, WriteException;
+
+    void generateAssessmentCertification(CertificationModel model, OutputStream outputStream) throws IOException;
 }

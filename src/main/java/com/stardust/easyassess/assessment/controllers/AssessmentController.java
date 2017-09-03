@@ -2,6 +2,7 @@ package com.stardust.easyassess.assessment.controllers;
 
 
 import com.stardust.easyassess.assessment.models.Assessment;
+import com.stardust.easyassess.assessment.models.CertificationModel;
 import com.stardust.easyassess.assessment.models.Owner;
 import com.stardust.easyassess.assessment.models.form.Form;
 import com.stardust.easyassess.assessment.models.form.Specimen;
@@ -22,6 +23,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -165,5 +167,27 @@ public class AssessmentController extends MaintenanceController<Assessment> {
         }
 
         return new ViewJSONWrapper(assessment);
+    }
+
+    @RequestMapping(path = "/certification",
+            method = {RequestMethod.GET})
+    public void previewCertification(HttpServletResponse response,
+                                     @RequestParam(defaultValue = "请输入证书颁发者") String certIssuer,
+                                     @RequestParam(defaultValue = "请输入证书标题") String certTitle,
+                                     @RequestParam(defaultValue = "请输入证书子标题") String certSubTitle,
+                                     @RequestParam(defaultValue = "请输入证书内容") String certContent,
+                                     @RequestParam(defaultValue = "请输入证书备注标题") String certCommentLabel,
+                                     @RequestParam(defaultValue = "请输入证书备注") String certCommentContent) throws IOException {
+        CertificationModel model = new CertificationModel();
+        model.setDate(new Date());
+        model.setOwner("XXXXX");
+        model.setCommentLabel(certCommentLabel);
+        model.setCommentContent(certCommentContent);
+        model.setIssuerLabel("颁发者");
+        model.setIssuer(certIssuer);
+        model.setTitle(certTitle);
+        model.setSubTitle(certSubTitle);
+        model.setContent(certContent);
+        ((AssessmentService)getService()).generateAssessmentCertification(model, response.getOutputStream());
     }
 }

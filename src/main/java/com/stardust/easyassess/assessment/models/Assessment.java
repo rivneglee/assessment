@@ -2,8 +2,10 @@ package com.stardust.easyassess.assessment.models;
 
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.stardust.easyassess.assessment.models.form.Form;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -22,6 +24,30 @@ public class Assessment extends DataModel {
     private String owner;
     private String ownerName;
     private String status;
+    private boolean enableCert;
+    private String certContent;
+    private String certCommentLabel;
+    private String certCommentContent;
+    private String certTitle;
+    private String certSubTitle;
+    private String certIssuer;
+    private Double passScore;
+
+    public String getCertIssuer() {
+        return certIssuer;
+    }
+
+    public void setCertIssuer(String certIssuer) {
+        this.certIssuer = certIssuer;
+    }
+
+    public Double getPassScore() {
+        return passScore;
+    }
+
+    public void setPassScore(Double passScore) {
+        this.passScore = passScore;
+    }
 
     @Embedded
     private Map<String, String> participants;
@@ -118,5 +144,53 @@ public class Assessment extends DataModel {
 
     public void setSpecimenCodes(Map<String, List<String>> specimenCodes) {
         this.specimenCodes = specimenCodes;
+    }
+
+    public boolean isEnableCert() {
+        return enableCert;
+    }
+
+    public void setEnableCert(boolean enableCert) {
+        this.enableCert = enableCert;
+    }
+
+    public String getCertContent() {
+        return certContent;
+    }
+
+    public void setCertContent(String certContent) {
+        this.certContent = certContent;
+    }
+
+    public String getCertCommentLabel() {
+        return certCommentLabel;
+    }
+
+    public void setCertCommentLabel(String certCommentLabel) {
+        this.certCommentLabel = certCommentLabel;
+    }
+
+    public String getCertCommentContent() {
+        return certCommentContent;
+    }
+
+    public void setCertCommentContent(String certCommentContent) {
+        this.certCommentContent = certCommentContent;
+    }
+
+    public String getCertTitle() {
+        return certTitle;
+    }
+
+    public void setCertTitle(String certTitle) {
+        this.certTitle = certTitle;
+    }
+
+    public String getCertSubTitle() {
+        return certSubTitle;
+    }
+
+    public void setCertSubTitle(String certSubTitle) {
+        this.certSubTitle = certSubTitle;
     }
 }

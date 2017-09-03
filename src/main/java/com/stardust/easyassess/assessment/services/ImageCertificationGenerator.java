@@ -13,7 +13,7 @@ import java.io.OutputStream;
 import java.util.*;
 
 public class ImageCertificationGenerator implements CertificationGenerator, ImageObserver {
-    private static Map<Style, BufferedImage> certificationImages = new HashMap<>();
+    private Map<Style, BufferedImage> certificationImages = new HashMap<>();
 
     private Style style;
 
@@ -56,14 +56,13 @@ public class ImageCertificationGenerator implements CertificationGenerator, Imag
     }
 
     static {
-        try {
-            BufferedImage bgImage = ImageIO.read(FormServiceImpl.class.getClassLoader().getResourceAsStream("static/cert-bg.jpg"));
-            certificationImages.put(Style.DEFAULT, bgImage);
-        } catch (IOException e) {}
+
     }
 
-    public ImageCertificationGenerator(Style style) {
+    public ImageCertificationGenerator(Style style) throws IOException {
         this.style = style;
+        BufferedImage bgImage = ImageIO.read(FormServiceImpl.class.getClassLoader().getResourceAsStream("static/cert-bg.jpg"));
+        certificationImages.put(Style.DEFAULT, bgImage);
     }
 
     private BufferedImage getBgImage() {
@@ -88,7 +87,8 @@ public class ImageCertificationGenerator implements CertificationGenerator, Imag
 
         drawBody(model.getContent(), g2d);
 
-        if (model.getCommentContent() != null && model.getCommentLabel() != null) {
+        if (model.getCommentContent() != null
+                && model.getCommentLabel() != null) {
             drawCommentLabel(model.getCommentLabel(), g2d);
             drawComment(model.getCommentContent(), g2d);
         }
@@ -97,7 +97,10 @@ public class ImageCertificationGenerator implements CertificationGenerator, Imag
 
         drawDate(model.getDate(), g2d);
 
-        drawQRCode(model.getUrl(), g2d);
+        if (model.getUrl() != null
+                && !model.getUrl().isEmpty()) {
+            drawQRCode(model.getUrl(), g2d);
+        }
 
         ImageIO.write(getBgImage(), "JPG", output);
     }
@@ -169,7 +172,7 @@ public class ImageCertificationGenerator implements CertificationGenerator, Imag
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(date);
         int year = calendar.get(Calendar.YEAR);
-        int month = calendar.get(Calendar.MONTH);
+        int month = calendar.get(Calendar.MONTH) + 1;
         int day = calendar.get(Calendar.DAY_OF_MONTH);
 
         g2d.setFont(new Font("宋体", Font.BOLD, fontSize));

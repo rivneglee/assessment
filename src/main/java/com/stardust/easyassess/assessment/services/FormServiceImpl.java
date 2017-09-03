@@ -467,19 +467,19 @@ public class FormServiceImpl extends AbstractEntityService<Form> implements Form
     @Override
     public void generateAssessmentCertification(String formId, OutputStream outputStream) throws IOException {
         Form form = get(formId);
-        if (form != null) {
+        if (form != null
+                && form.isQualifiedForCert()) {
             CertificationGenerator certGenerator = new ImageCertificationGenerator(ImageCertificationGenerator.Style.DEFAULT);
             CertificationModel certModel = new CertificationModel();
-
-            certModel.setTitle("室间考评证书");
-            certModel.setSubTitle("Certification for EQA");
+            certModel.setTitle(form.getAssessment().getCertTitle());
+            certModel.setSubTitle(form.getAssessment().getCertSubTitle());
             certModel.setOwner(form.getOwnerName());
             certModel.setIssuerLabel("颁发机构");
-            certModel.setIssuer(form.getAssessment().getOwnerName());
-            certModel.setContent("你单位通过了" + form.getAssessment().getName() + "，特此颁发次证书.");
-            certModel.setCommentLabel("注 合格项目");
-            certModel.setCommentContent("肝功三项, 肝炎筛查");
-            certModel.setDate(new Date());
+            certModel.setIssuer(form.getAssessment().getCertIssuer() != null ? form.getAssessment().getCertIssuer() : form.getAssessment().getOwnerName());
+            certModel.setContent(form.getAssessment().getCertContent());
+            certModel.setCommentLabel(form.getAssessment().getCertCommentLabel());
+            certModel.setCommentContent(form.getAssessment().getCertCommentContent());
+            certModel.setDate(form.getAssessment().getEndDate());
             certModel.setUrl(certServer + "default/assess/form/" + formId + "/certification");
             certGenerator.generate(certModel, outputStream);
         }

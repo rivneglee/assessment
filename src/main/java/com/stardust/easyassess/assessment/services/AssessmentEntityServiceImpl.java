@@ -4,6 +4,7 @@ import com.stardust.easyassess.assessment.dao.repositories.AssessmentRepository;
 import com.stardust.easyassess.assessment.dao.repositories.DataRepository;
 import com.stardust.easyassess.assessment.dao.repositories.FormRepository;
 import com.stardust.easyassess.assessment.models.Assessment;
+import com.stardust.easyassess.assessment.models.CertificationModel;
 import com.stardust.easyassess.assessment.models.form.*;
 import jxl.Workbook;
 import jxl.format.Alignment;
@@ -293,6 +294,13 @@ public class AssessmentEntityServiceImpl extends AbstractEntityService<Assessmen
 
         workbook.write();
         workbook.close();
+    }
+
+
+    @Override
+    public void generateAssessmentCertification(CertificationModel certModel, OutputStream outputStream) throws IOException {
+        CertificationGenerator certGenerator = new ImageCertificationGenerator(ImageCertificationGenerator.Style.DEFAULT);
+        certGenerator.generate(certModel, outputStream);
     }
 
     private Double calculateScore(ExpectionOption expectation, ActualValue av) {

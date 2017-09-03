@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.stardust.easyassess.assessment.models.Assessment;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -211,6 +212,18 @@ public class Form extends FormElement {
 
     public void setAdditationScoreDesc(String additationScoreDesc) {
         this.additationScoreDesc = additationScoreDesc;
+    }
+
+    @Transient
+    public boolean isQualifiedForCert() {
+//        if (status.equals("F")
+//                && getAssessment().isEnableCert()
+//                && getAssessment().getStatus().equals("F")
+//                && getTotalScore().compareTo(getAssessment().getPassScore()) >=0) {
+//            return true;
+//        }
+//        return false;
+        return true;
     }
 }
 
