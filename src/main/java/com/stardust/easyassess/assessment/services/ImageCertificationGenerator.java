@@ -164,7 +164,9 @@ public class ImageCertificationGenerator implements CertificationGenerator, Imag
         BufferedImage signature;
         try {
             signature = ImageIO.read(new URL(url).openStream());
+            g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.7f));
             g2d.drawImage(signature, getBgImage().getWidth() - textWidth - 250 + getOffset().getLeft(), 400 + getOffset().getTop() - 80, 200, 200, this);
+            g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1f));
         } catch (IOException e) {
         }
     }
