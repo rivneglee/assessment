@@ -469,9 +469,11 @@ public class FormServiceImpl extends AbstractEntityService<Form> implements Form
         Form form = get(formId);
         if (form != null
                 && form.isQualifiedForCert()) {
+            String signature = "http://assess-bucket.oss-cn-beijing.aliyuncs.com/ministry-signature/signature_" + form.getAssessment().getOwner() + ".png";
             CertificationGenerator certGenerator = new ImageCertificationGenerator(ImageCertificationGenerator.Style.DEFAULT);
             CertificationModel certModel = new CertificationModel();
             certModel.setTitle(form.getAssessment().getCertTitle());
+            certModel.setSignatureUrl(signature);
             certModel.setSubTitle(form.getAssessment().getCertSubTitle());
             certModel.setOwner(form.getOwnerName());
             certModel.setIssuerLabel("颁发机构");

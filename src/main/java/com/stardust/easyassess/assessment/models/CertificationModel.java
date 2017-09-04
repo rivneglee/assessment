@@ -25,6 +25,8 @@ public class CertificationModel {
 
     private String url;
 
+    private String signatureUrl;
+
     public String getUrl() {
         return url;
     }
@@ -103,5 +105,13 @@ public class CertificationModel {
 
     public void setIssuerLabel(String issuerLabel) {
         this.issuerLabel = issuerLabel;
+    }
+
+    public String getSignatureUrl() {
+        return signatureUrl;
+    }
+
+    public void setSignatureUrl(String signatureUrl) {
+        this.signatureUrl = signatureUrl;
     }
 }

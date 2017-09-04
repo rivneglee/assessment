@@ -10,6 +10,7 @@ import java.awt.image.BufferedImage;
 import java.awt.image.ImageObserver;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.net.URL;
 import java.util.*;
 
 public class ImageCertificationGenerator implements CertificationGenerator, ImageObserver {
@@ -93,7 +94,7 @@ public class ImageCertificationGenerator implements CertificationGenerator, Imag
             drawComment(model.getCommentContent(), g2d);
         }
 
-        drawIssuer(model.getIssuerLabel(), model.getIssuer(), g2d);
+        drawIssuer(model.getIssuerLabel(), model.getIssuer(), model.getSignatureUrl(), g2d);
 
         drawDate(model.getDate(), g2d);
 
@@ -149,7 +150,7 @@ public class ImageCertificationGenerator implements CertificationGenerator, Imag
         g2d.drawString(comment, 160 + getOffset().getLeft(), 450 + getOffset().getTop());
     }
 
-    private void drawIssuer(String label, String issuer, Graphics2D g2d) {
+    private void drawIssuer(String label, String issuer, String url, Graphics2D g2d) {
         final int fontSize = 18;
 
         g2d.setFont(new Font("宋体", Font.BOLD, fontSize));
@@ -159,6 +160,13 @@ public class ImageCertificationGenerator implements CertificationGenerator, Imag
         g2d.drawString(label + ":", getBgImage().getWidth() - textWidth - 200 + getOffset().getLeft(), 400 + getOffset().getTop());
 
         g2d.drawString(issuer, getBgImage().getWidth() - textWidth - 200 + getOffset().getLeft(), 450 + getOffset().getTop());
+
+        BufferedImage signature;
+        try {
+            signature = ImageIO.read(new URL(url).openStream());
+            g2d.drawImage(signature, getBgImage().getWidth() - textWidth - 250 + getOffset().getLeft(), 400 + getOffset().getTop() - 80, 200, 200, this);
+        } catch (IOException e) {
+        }
     }
 
     private void drawQRCode(String url, Graphics2D g2d) throws IOException {
