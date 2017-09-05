@@ -91,9 +91,7 @@ public class ImageCertificationGenerator implements CertificationGenerator, Imag
             drawComment(model.getCommentContent(), g2d);
         }
 
-        drawIssuer(model.getIssuerLabel(), model.getIssuer(), model.getSignatureUrl(), g2d);
-
-        drawDate(model.getDate(), g2d);
+        drawIssuer(model.getIssuerLabel(), model.getIssuer(), model.getDate(), model.getSignatureUrl(), g2d);
 
         if (model.getUrl() != null
                 && !model.getUrl().isEmpty()) {
@@ -177,7 +175,7 @@ public class ImageCertificationGenerator implements CertificationGenerator, Imag
         g2d.drawString(comment, 160 + getOffset().getLeft(), 450 + getOffset().getTop());
     }
 
-    private void drawIssuer(String label, String issuer, String url, Graphics2D g2d) {
+    private void drawIssuer(String label, String issuer, Date date, String url, Graphics2D g2d) {
         final int fontSize = 18;
 
         final int left = getBgImage().getWidth() - 450 + getOffset().getLeft();
@@ -186,7 +184,9 @@ public class ImageCertificationGenerator implements CertificationGenerator, Imag
 
         g2d.drawString(label + ":", left, 400 + getOffset().getTop());
 
-        drawWrapContent(issuer, g2d, 250, 30, 450 + getOffset().getTop(), left);
+        final int nextLineTop = drawWrapContent(issuer, g2d, 250, 30, 450 + getOffset().getTop(), left) + 100;
+
+        drawDate(date, g2d, getBgImage().getWidth() - 330, nextLineTop);
 
         BufferedImage signature;
         try {
@@ -199,12 +199,12 @@ public class ImageCertificationGenerator implements CertificationGenerator, Imag
     }
 
     private void drawQRCode(String url, Graphics2D g2d) throws IOException {
-        BufferedImage qrCode = ImageIO.read( QRCode.from(url).file());
+        BufferedImage qrCode = ImageIO.read(QRCode.from(url).file());
 
-        g2d.drawImage(qrCode, 150 + getOffset().getLeft(), 520 + getOffset().getTop(), 100, 100, this);
+        g2d.drawImage(qrCode, 180 + getOffset().getLeft(), 460 + getOffset().getTop(), 180, 180, this);
     }
 
-    private void drawDate(Date date, Graphics2D g2d) {
+    private void drawDate(Date date, Graphics2D g2d, int left, int top) {
         final int fontSize = 18;
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(date);
@@ -214,10 +214,10 @@ public class ImageCertificationGenerator implements CertificationGenerator, Imag
 
         g2d.setFont(new Font("宋体", Font.BOLD, fontSize));
 
-        g2d.drawString(year + "年 " + month + "月 " + day + "日", 160 + getOffset().getLeft(), 500 + getOffset().getTop());
+        g2d.drawString(year + "年 " + month + "月 " + day + "日", left + getOffset().getTop() , top + getOffset().getTop());
     }
 
-    private void drawWrapContent(String content, Graphics2D g2d, int maxLineWidth, int lineHeight, int lineTop, int lineLeft) {
+    private int drawWrapContent(String content, Graphics2D g2d, int maxLineWidth, int lineHeight, int lineTop, int lineLeft) {
         StringBuilder sb = new StringBuilder();
 
         if (g2d.getFontMetrics().stringWidth(content) > maxLineWidth) {
@@ -237,6 +237,8 @@ public class ImageCertificationGenerator implements CertificationGenerator, Imag
         } else {
             g2d.drawString(content, lineLeft + getOffset().getLeft(), lineTop);
         }
+
+        return lineTop;
     }
 
     private void drawBody(String body, Graphics2D g2d) {
