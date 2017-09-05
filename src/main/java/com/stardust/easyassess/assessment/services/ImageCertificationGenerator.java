@@ -1,15 +1,16 @@
 package com.stardust.easyassess.assessment.services;
 
 
+import com.stardust.easyassess.assessment.common.OSSBucketAccessor;
 import com.stardust.easyassess.assessment.models.CertificationModel;
+import com.stardust.easyassess.assessment.models.form.Form;
 import net.glxn.qrgen.QRCode;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.awt.image.ImageObserver;
-import java.io.IOException;
-import java.io.OutputStream;
+import java.io.*;
 import java.net.URL;
 import java.util.*;
 
@@ -19,7 +20,7 @@ public class ImageCertificationGenerator implements CertificationGenerator, Imag
     private Style style;
 
     @Override
-    public boolean imageUpdate(Image img, int infoflags, int x, int y, int width, int height) {
+    public boolean imageUpdate(Image img, int infoFlags, int x, int y, int width, int height) {
         return true;
     }
 
@@ -56,10 +57,6 @@ public class ImageCertificationGenerator implements CertificationGenerator, Imag
         }
     }
 
-    static {
-
-    }
-
     public ImageCertificationGenerator(Style style) throws IOException {
         this.style = style;
         BufferedImage bgImage = ImageIO.read(FormServiceImpl.class.getClassLoader().getResourceAsStream("static/cert-bg.jpg"));
@@ -75,7 +72,7 @@ public class ImageCertificationGenerator implements CertificationGenerator, Imag
     }
 
     @Override
-    public void generate(CertificationModel model, OutputStream output) throws IOException {
+    public URL generate(CertificationModel model) throws IOException {
         Graphics2D g2d = (Graphics2D) getBgImage().getGraphics();
         g2d.setColor(Color.BLACK);
         g2d.setStroke(new BasicStroke(2));
@@ -103,7 +100,37 @@ public class ImageCertificationGenerator implements CertificationGenerator, Imag
             drawQRCode(model.getUrl(), g2d);
         }
 
-        ImageIO.write(getBgImage(), "JPG", output);
+        if ( model.getForm() != null) {
+            ByteArrayOutputStream os = new ByteArrayOutputStream();
+            ImageIO.write(getBgImage(), "JPG", os);
+            InputStream inputStream = new ByteArrayInputStream(os.toByteArray());
+            return new URL(new OSSBucketAccessor().put("assess-bucket", "ministry-certs/cert_" + model.getForm().getAssessment().getOwnerName() + "_" + model.getForm().getAssessment().getName() + "_" + model.getForm().getOwnerName() + "_" +model.getForm().getId() + ".jpg", inputStream));
+        }
+
+        return null;
+    }
+
+    @Override
+    public InputStream getCertification(Form form) {
+        if (form != null) {
+            String certUrl = "http://assess-bucket.oss-cn-beijing.aliyuncs.com/ministry-certs/cert_" + form.getAssessment().getOwnerName() + "_" + form.getAssessment().getName() + "_" + form.getOwnerName() + "_" + form.getId() + ".jpg";
+            try {
+                return new URL(certUrl).openStream();
+            } catch (IOException e) {}
+        }
+
+        return null;
+    }
+
+    @Override
+    public void printCertification(CertificationModel model, OutputStream outputStream) throws IOException {
+        InputStream inputStream = getCertification(model.getForm());
+        if (inputStream == null) {
+            generate(model);
+            ImageIO.write(getBgImage(), "JPG" ,outputStream);
+        } else {
+            ImageIO.write(ImageIO.read(inputStream), "JPG" ,outputStream);
+        }
     }
 
     private int getHorizontalCenter(String text, Graphics graphics) {
@@ -153,19 +180,19 @@ public class ImageCertificationGenerator implements CertificationGenerator, Imag
     private void drawIssuer(String label, String issuer, String url, Graphics2D g2d) {
         final int fontSize = 18;
 
+        final int left = getBgImage().getWidth() - 450 + getOffset().getLeft();
+
         g2d.setFont(new Font("宋体", Font.BOLD, fontSize));
 
-        final int textWidth = Math.max(g2d.getFontMetrics().stringWidth(label), g2d.getFontMetrics().stringWidth(issuer));
+        g2d.drawString(label + ":", left, 400 + getOffset().getTop());
 
-        g2d.drawString(label + ":", getBgImage().getWidth() - textWidth - 200 + getOffset().getLeft(), 400 + getOffset().getTop());
-
-        g2d.drawString(issuer, getBgImage().getWidth() - textWidth - 200 + getOffset().getLeft(), 450 + getOffset().getTop());
+        drawWrapContent(issuer, g2d, 250, 30, 450 + getOffset().getTop(), left);
 
         BufferedImage signature;
         try {
             signature = ImageIO.read(new URL(url).openStream());
             g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.7f));
-            g2d.drawImage(signature, getBgImage().getWidth() - textWidth - 250 + getOffset().getLeft(), 400 + getOffset().getTop() - 80, 200, 200, this);
+            g2d.drawImage(signature, left, 400 + getOffset().getTop() - 80, 200, 200, this);
             g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1f));
         } catch (IOException e) {
         }
@@ -190,8 +217,32 @@ public class ImageCertificationGenerator implements CertificationGenerator, Imag
         g2d.drawString(year + "年 " + month + "月 " + day + "日", 160 + getOffset().getLeft(), 500 + getOffset().getTop());
     }
 
+    private void drawWrapContent(String content, Graphics2D g2d, int maxLineWidth, int lineHeight, int lineTop, int lineLeft) {
+        StringBuilder sb = new StringBuilder();
+
+        if (g2d.getFontMetrics().stringWidth(content) > maxLineWidth) {
+            for (char c : content.toCharArray()) {
+                sb.append(c);
+                if (g2d.getFontMetrics().stringWidth(sb.toString()) >= maxLineWidth) {
+                    g2d.drawString(sb.toString(), lineLeft + getOffset().getLeft(), lineTop);
+                    sb.delete(0, sb.length());
+                    lineTop += lineHeight;
+                }
+            }
+
+            if (sb.length() > 0) {
+                g2d.drawString(sb.toString(), lineLeft + getOffset().getLeft(), lineTop);
+            }
+
+        } else {
+            g2d.drawString(content, lineLeft + getOffset().getLeft(), lineTop);
+        }
+    }
+
     private void drawBody(String body, Graphics2D g2d) {
         final int fontSize = 20;
+
+        g2d.setFont(new Font("宋体", Font.PLAIN, fontSize));
 
         final int maxLineWidth = new Double(getBgImage().getWidth() * 0.7).intValue();
 
@@ -199,26 +250,26 @@ public class ImageCertificationGenerator implements CertificationGenerator, Imag
 
         int lineTop = 260 + getOffset().getTop();
 
-        StringBuilder sb = new StringBuilder();
+        drawWrapContent(body, g2d, maxLineWidth, lineHeight, lineTop, 160);
 
-        g2d.setFont(new Font("宋体", Font.PLAIN, fontSize));
-
-        if (g2d.getFontMetrics().stringWidth(body) > maxLineWidth) {
-            for (char c : body.toCharArray()) {
-                sb.append(c);
-                if (g2d.getFontMetrics().stringWidth(sb.toString()) >= maxLineWidth) {
-                    g2d.drawString(sb.toString(), 160 + getOffset().getLeft(), lineTop);
-                    sb.delete(0, sb.length());
-                    lineTop += lineHeight;
-                }
-            }
-
-            if (sb.length() > 0) {
-                g2d.drawString(sb.toString(), 160 + getOffset().getLeft(), lineTop);
-            }
-
-        } else {
-            g2d.drawString(body, 160 + getOffset().getLeft(), lineTop);
-        }
+//        StringBuilder sb = new StringBuilder();
+//
+//        if (g2d.getFontMetrics().stringWidth(body) > maxLineWidth) {
+//            for (char c : body.toCharArray()) {
+//                sb.append(c);
+//                if (g2d.getFontMetrics().stringWidth(sb.toString()) >= maxLineWidth) {
+//                    g2d.drawString(sb.toString(), 160 + getOffset().getLeft(), lineTop);
+//                    sb.delete(0, sb.length());
+//                    lineTop += lineHeight;
+//                }
+//            }
+//
+//            if (sb.length() > 0) {
+//                g2d.drawString(sb.toString(), 160 + getOffset().getLeft(), lineTop);
+//            }
+//
+//        } else {
+//            g2d.drawString(body, 160 + getOffset().getLeft(), lineTop);
+//        }
     }
 }

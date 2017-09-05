@@ -35,6 +35,8 @@ public class AssessmentController extends MaintenanceController<Assessment> {
     @Autowired
     protected ApplicationContext applicationContext;
 
+    private final String OSS_BUCKET_ENDPOINT = "http://assess-bucket.oss-cn-beijing.aliyuncs.com";
+
     @Override
     @ResponseBody
     @RequestMapping(method = {RequestMethod.POST})
@@ -188,6 +190,11 @@ public class AssessmentController extends MaintenanceController<Assessment> {
         model.setTitle(certTitle);
         model.setSubTitle(certSubTitle);
         model.setContent(certContent);
+        Owner owner = getNullableOwner();
+        if (owner != null) {
+            String signature = OSS_BUCKET_ENDPOINT + "/ministry-signature/signature_" + owner.getId() + ".png";
+            model.setSignatureUrl(signature);
+        }
         ((AssessmentService)getService()).generateAssessmentCertification(model, response.getOutputStream());
     }
 }

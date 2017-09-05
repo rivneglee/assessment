@@ -8,9 +8,7 @@ import com.stardust.easyassess.assessment.dao.repositories.FormTemplateRepositor
 import com.stardust.easyassess.assessment.models.CertificationModel;
 import com.stardust.easyassess.assessment.models.Owner;
 import com.stardust.easyassess.assessment.models.form.*;
-import jxl.CellView;
 import jxl.Workbook;
-import jxl.format.*;
 import jxl.format.Alignment;
 import jxl.format.Border;
 import jxl.format.BorderLineStyle;
@@ -21,20 +19,15 @@ import jxl.write.Label;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Scope;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.imageio.ImageIO;
-import java.awt.*;
-import java.awt.Font;
 import java.awt.image.BufferedImage;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.lang.reflect.Array;
+import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.List;
@@ -469,21 +462,10 @@ public class FormServiceImpl extends AbstractEntityService<Form> implements Form
         Form form = get(formId);
         if (form != null
                 && form.isQualifiedForCert()) {
-            String signature = "http://assess-bucket.oss-cn-beijing.aliyuncs.com/ministry-signature/signature_" + form.getAssessment().getOwner() + ".png";
             CertificationGenerator certGenerator = new ImageCertificationGenerator(ImageCertificationGenerator.Style.DEFAULT);
-            CertificationModel certModel = new CertificationModel();
-            certModel.setTitle(form.getAssessment().getCertTitle());
-            certModel.setSignatureUrl(signature);
-            certModel.setSubTitle(form.getAssessment().getCertSubTitle());
-            certModel.setOwner(form.getOwnerName());
-            certModel.setIssuerLabel("颁发机构");
-            certModel.setIssuer(form.getAssessment().getCertIssuer() != null ? form.getAssessment().getCertIssuer() : form.getAssessment().getOwnerName());
-            certModel.setContent(form.getAssessment().getCertContent());
-            certModel.setCommentLabel(form.getAssessment().getCertCommentLabel());
-            certModel.setCommentContent(form.getAssessment().getCertCommentContent());
-            certModel.setDate(form.getAssessment().getEndDate());
+            CertificationModel certModel = new CertificationModel(form);
             certModel.setUrl(certServer + "default/assess/form/" + formId + "/certification");
-            certGenerator.generate(certModel, outputStream);
+            certGenerator.printCertification(certModel, outputStream);
         }
     }
 }

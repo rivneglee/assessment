@@ -300,7 +300,7 @@ public class AssessmentEntityServiceImpl extends AbstractEntityService<Assessmen
     @Override
     public void generateAssessmentCertification(CertificationModel certModel, OutputStream outputStream) throws IOException {
         CertificationGenerator certGenerator = new ImageCertificationGenerator(ImageCertificationGenerator.Style.DEFAULT);
-        certGenerator.generate(certModel, outputStream);
+        certGenerator.printCertification(certModel, outputStream);
     }
 
     private Double calculateScore(ExpectionOption expectation, ActualValue av) {
