@@ -201,7 +201,7 @@ public class ImageCertificationGenerator implements CertificationGenerator, Imag
     private void drawQRCode(String url, Graphics2D g2d) throws IOException {
         BufferedImage qrCode = ImageIO.read(QRCode.from(url).file());
 
-        g2d.drawImage(qrCode, 180 + getOffset().getLeft(), 460 + getOffset().getTop(), 180, 180, this);
+        g2d.drawImage(qrCode, 180 + getOffset().getLeft(), 460 + getOffset().getTop(), 160, 160, this);
     }
 
     private void drawDate(Date date, Graphics2D g2d, int left, int top) {

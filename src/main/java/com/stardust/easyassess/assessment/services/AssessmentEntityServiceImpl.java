@@ -13,6 +13,7 @@ import jxl.format.BorderLineStyle;
 import jxl.format.VerticalAlignment;
 import jxl.write.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
@@ -37,6 +38,9 @@ public class AssessmentEntityServiceImpl extends AbstractEntityService<Assessmen
 
     @Autowired
     ApplicationContext applicationContext;
+
+    @Value("${assess.cert.server}")
+    String certServer;
 
     @Override
     @Transactional
@@ -300,6 +304,7 @@ public class AssessmentEntityServiceImpl extends AbstractEntityService<Assessmen
     @Override
     public void generateAssessmentCertification(CertificationModel certModel, OutputStream outputStream) throws IOException {
         CertificationGenerator certGenerator = new ImageCertificationGenerator(ImageCertificationGenerator.Style.DEFAULT);
+        certModel.setUrl(certServer + "default/assess/assessment/certification?preview=true&certContent=" + certModel.getContent() + "&certCommentLabel=" + certModel.getCommentLabel() + "&certCommentContent=" + certModel.getCommentContent() + "&certTitle=" + certModel.getTitle() + "&certSubTitle=" + certModel.getSubTitle() + "&certIssuer=" + certModel.getIssuer());
         certGenerator.printCertification(certModel, outputStream);
     }
 
