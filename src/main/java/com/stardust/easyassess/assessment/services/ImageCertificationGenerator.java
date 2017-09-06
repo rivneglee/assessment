@@ -138,7 +138,7 @@ public class ImageCertificationGenerator implements CertificationGenerator, Imag
     private void drawTitle(String title, Graphics2D g2d) {
         final int fontSize = 30;
 
-        g2d.setFont(new Font("宋体", Font.PLAIN, fontSize));
+        g2d.setFont(new Font("宋体", Font.BOLD, fontSize));
 
         g2d.drawString(title, getHorizontalCenter(title, g2d),  120 + getOffset().getTop());
     }
@@ -146,7 +146,7 @@ public class ImageCertificationGenerator implements CertificationGenerator, Imag
     private void drawSubTitle(String subTitle, Graphics2D g2d) {
         final int fontSize = 20;
 
-        g2d.setFont(new Font("宋体", Font.PLAIN, fontSize));
+        g2d.setFont(new Font("宋体", Font.BOLD, fontSize));
 
         g2d.drawString(subTitle, getHorizontalCenter(subTitle, g2d), 150 + getOffset().getTop());
     }
@@ -182,9 +182,9 @@ public class ImageCertificationGenerator implements CertificationGenerator, Imag
 
         g2d.setFont(new Font("宋体", Font.BOLD, fontSize));
 
-        g2d.drawString(label + ":", left, 400 + getOffset().getTop());
+        // g2d.drawString(label + ":", left, 400 + getOffset().getTop());
 
-        final int nextLineTop = drawWrapContent(issuer, g2d, 250, 30, 450 + getOffset().getTop(), left) + 100;
+        final int nextLineTop = drawWrapContent(issuer, g2d, 350, 30, 510 + getOffset().getTop(), left) + 100;
 
         drawDate(date, g2d, getBgImage().getWidth() - 330, nextLineTop);
 
@@ -192,7 +192,7 @@ public class ImageCertificationGenerator implements CertificationGenerator, Imag
         try {
             signature = ImageIO.read(new URL(url).openStream());
             g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.7f));
-            g2d.drawImage(signature, left, 400 + getOffset().getTop() - 80, 200, 200, this);
+            g2d.drawImage(signature, left, 500 + getOffset().getTop() - 80, 200, 200, this);
             g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1f));
         } catch (IOException e) {
         }
@@ -244,6 +244,8 @@ public class ImageCertificationGenerator implements CertificationGenerator, Imag
     private void drawBody(String body, Graphics2D g2d) {
         final int fontSize = 20;
 
+        final String indent = "       ";
+
         g2d.setFont(new Font("宋体", Font.PLAIN, fontSize));
 
         final int maxLineWidth = new Double(getBgImage().getWidth() * 0.7).intValue();
@@ -252,7 +254,7 @@ public class ImageCertificationGenerator implements CertificationGenerator, Imag
 
         int lineTop = 260 + getOffset().getTop();
 
-        drawWrapContent(body, g2d, maxLineWidth, lineHeight, lineTop, 160);
+        drawWrapContent(indent + body, g2d, maxLineWidth, lineHeight, lineTop, 160);
 
 //        StringBuilder sb = new StringBuilder();
 //
