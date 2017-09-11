@@ -44,7 +44,7 @@ public class ImageCertificationGenerator implements CertificationGenerator, Imag
     }
 
     public enum Style {
-        DEFAULT(new LayoutOffset(0, 0));
+        DEFAULT(new LayoutOffset(30, 60));
 
         LayoutOffset offset;
 
@@ -136,63 +136,63 @@ public class ImageCertificationGenerator implements CertificationGenerator, Imag
     }
 
     private void drawTitle(String title, Graphics2D g2d) {
-        final int fontSize = 30;
+        final int fontSize = 34;
 
         g2d.setFont(new Font("宋体", Font.BOLD, fontSize));
 
-        g2d.drawString(title, getHorizontalCenter(title, g2d),  120 + getOffset().getTop());
+        g2d.drawString(title, getHorizontalCenter(title, g2d),  140 + getOffset().getTop());
     }
 
     private void drawSubTitle(String subTitle, Graphics2D g2d) {
-        final int fontSize = 20;
+        final int fontSize = 24;
 
         g2d.setFont(new Font("宋体", Font.BOLD, fontSize));
 
-        g2d.drawString(subTitle, getHorizontalCenter(subTitle, g2d), 150 + getOffset().getTop());
+        g2d.drawString(subTitle, getHorizontalCenter(subTitle, g2d), 170 + getOffset().getTop());
     }
 
     private void drawOwner(String owner, Graphics2D g2d) {
-        final int fontSize = 25;
+        final int fontSize = 31;
 
         g2d.setFont(new Font("宋体", Font.BOLD, fontSize));
 
-        g2d.drawString(owner + ":", 160 + getOffset().getLeft(), 200 + getOffset().getTop());
+        g2d.drawString(owner + ":", 160 + getOffset().getLeft(), 220 + getOffset().getTop());
     }
 
     private void drawCommentLabel(String label, Graphics2D g2d) {
-        final int fontSize = 18;
+        final int fontSize = 22;
 
         g2d.setFont(new Font("宋体", Font.BOLD, fontSize));
 
-        g2d.drawString(label + ":", 160 + getOffset().getLeft(), 400 + getOffset().getTop());
+        g2d.drawString(label + ":", 160 + getOffset().getLeft(), 420 + getOffset().getTop());
     }
 
     private void drawComment(String comment, Graphics2D g2d) {
-        final int fontSize = 18;
+        final int fontSize = 22;
 
         g2d.setFont(new Font("宋体", Font.BOLD, fontSize));
 
-        g2d.drawString(comment, 160 + getOffset().getLeft(), 450 + getOffset().getTop());
+        g2d.drawString(comment, 160 + getOffset().getLeft(), 470 + getOffset().getTop());
     }
 
     private void drawIssuer(String label, String issuer, Date date, String url, Graphics2D g2d) {
-        final int fontSize = 18;
+        final int fontSize = 22;
 
-        final int left = getBgImage().getWidth() - 450 + getOffset().getLeft();
+        final int left = getBgImage().getWidth() - 410 + getOffset().getLeft();
 
         g2d.setFont(new Font("宋体", Font.BOLD, fontSize));
 
         // g2d.drawString(label + ":", left, 400 + getOffset().getTop());
 
-        final int nextLineTop = drawWrapContent(issuer, g2d, 350, 30, 510 + getOffset().getTop(), left) + 100;
+        final int nextLineTop = drawWrapContent(issuer, g2d, 350, 30, 530 + getOffset().getTop(), left - 100) + 100;
 
-        drawDate(date, g2d, getBgImage().getWidth() - 330, nextLineTop);
+        drawDate(date, g2d, getBgImage().getWidth() - 460, nextLineTop);
 
         BufferedImage signature;
         try {
             signature = ImageIO.read(new URL(url).openStream());
             g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.7f));
-            g2d.drawImage(signature, left, 500 + getOffset().getTop() - 80, 200, 200, this);
+            g2d.drawImage(signature, left - 50, 500 + getOffset().getTop() - 80, 200, 200, this);
             g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1f));
         } catch (IOException e) {
         }
@@ -201,11 +201,11 @@ public class ImageCertificationGenerator implements CertificationGenerator, Imag
     private void drawQRCode(String url, Graphics2D g2d) throws IOException {
         BufferedImage qrCode = ImageIO.read(QRCode.from(url).file());
 
-        g2d.drawImage(qrCode, 180 + getOffset().getLeft(), 460 + getOffset().getTop(), 160, 160, this);
+        g2d.drawImage(qrCode, 180 + getOffset().getLeft(), 480 + getOffset().getTop(), 160, 160, this);
     }
 
     private void drawDate(Date date, Graphics2D g2d, int left, int top) {
-        final int fontSize = 18;
+        final int fontSize = 22;
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(date);
         int year = calendar.get(Calendar.YEAR);
@@ -242,7 +242,7 @@ public class ImageCertificationGenerator implements CertificationGenerator, Imag
     }
 
     private void drawBody(String body, Graphics2D g2d) {
-        final int fontSize = 20;
+        final int fontSize = 24;
 
         final String indent = "       ";
 
