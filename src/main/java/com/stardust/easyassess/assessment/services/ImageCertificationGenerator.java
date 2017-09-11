@@ -242,7 +242,7 @@ public class ImageCertificationGenerator implements CertificationGenerator, Imag
     }
 
     private void drawBody(String body, Graphics2D g2d) {
-        final int fontSize = 24;
+        final int fontSize = 30;
 
         final String indent = "       ";
 
