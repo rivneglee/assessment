@@ -184,15 +184,15 @@ public class ImageCertificationGenerator implements CertificationGenerator, Imag
 
         // g2d.drawString(label + ":", left, 400 + getOffset().getTop());
 
-        final int nextLineTop = drawWrapContent(issuer, g2d, 350, 30, 530 + getOffset().getTop(), left - 100) + 100;
+        final int nextLineTop = drawWrapContent(issuer, g2d, 350, 30, 630 + getOffset().getTop(), left - 200) + 40;
 
-        drawDate(date, g2d, getBgImage().getWidth() - 460, nextLineTop);
+        drawDate(date, g2d, getBgImage().getWidth() - 560, nextLineTop);
 
         BufferedImage signature;
         try {
             signature = ImageIO.read(new URL(url).openStream());
             g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.7f));
-            g2d.drawImage(signature, left - 50, 500 + getOffset().getTop() - 80, 200, 200, this);
+            g2d.drawImage(signature, left - 150, 600 + getOffset().getTop() - 80, 200, 200, this);
             g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1f));
         } catch (IOException e) {
         }
@@ -201,7 +201,7 @@ public class ImageCertificationGenerator implements CertificationGenerator, Imag
     private void drawQRCode(String url, Graphics2D g2d) throws IOException {
         BufferedImage qrCode = ImageIO.read(QRCode.from(url).file());
 
-        g2d.drawImage(qrCode, 180 + getOffset().getLeft(), 480 + getOffset().getTop(), 160, 160, this);
+        g2d.drawImage(qrCode, 180 + getOffset().getLeft(), 480 + getOffset().getTop(), 200, 200, this);
     }
 
     private void drawDate(Date date, Graphics2D g2d, int left, int top) {

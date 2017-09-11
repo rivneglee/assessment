@@ -44,7 +44,7 @@ public class CertificationModel {
         this.setContent(form.getAssessment().getCertContent());
         this.setCommentLabel(form.getAssessment().getCertCommentLabel());
         this.setCommentContent(form.getAssessment().getCertCommentContent());
-        this.setDate(form.getAssessment().getEndDate());
+        this.setDate(form.getAssessment().getCertIssueDate());
         this.setForm(form);
     }
 

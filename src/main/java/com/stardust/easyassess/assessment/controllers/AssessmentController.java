@@ -22,6 +22,8 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -179,9 +181,15 @@ public class AssessmentController extends MaintenanceController<Assessment> {
                                      @RequestParam(defaultValue = "请输入证书子标题") String certSubTitle,
                                      @RequestParam(defaultValue = "请输入证书内容") String certContent,
                                      @RequestParam(defaultValue = "请输入证书备注标题") String certCommentLabel,
-                                     @RequestParam(defaultValue = "请输入证书备注") String certCommentContent) throws IOException {
+                                     @RequestParam(defaultValue = "请输入证书备注") String certCommentContent,
+                                     @RequestParam(defaultValue = "") String certIssueDate) throws IOException, ParseException {
         CertificationModel model = new CertificationModel();
-        model.setDate(new Date());
+        if (certIssueDate.isEmpty()) {
+            model.setDate(new Date());
+        } else {
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            model.setDate(simpleDateFormat.parse(certIssueDate));
+        }
         model.setOwner("XXXXX");
         model.setCommentLabel(certCommentLabel);
         model.setCommentContent(certCommentContent);

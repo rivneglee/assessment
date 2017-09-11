@@ -31,7 +31,16 @@ public class Assessment extends DataModel {
     private String certTitle;
     private String certSubTitle;
     private String certIssuer;
+    private Date certIssueDate;
     private Double passScore = new Double(60);
+
+    public Date getCertIssueDate() {
+        return certIssueDate != null ? certIssueDate : new Date();
+    }
+
+    public void setCertIssueDate(Date certIssueDate) {
+        this.certIssueDate = certIssueDate;
+    }
 
     public String getCertIssuer() {
         return certIssuer;

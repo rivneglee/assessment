@@ -21,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 @Service
@@ -304,7 +305,8 @@ public class AssessmentEntityServiceImpl extends AbstractEntityService<Assessmen
     @Override
     public void generateAssessmentCertification(CertificationModel certModel, OutputStream outputStream) throws IOException {
         CertificationGenerator certGenerator = new ImageCertificationGenerator(ImageCertificationGenerator.Style.DEFAULT);
-        certModel.setUrl(certServer + "default/assess/assessment/certification?preview=true&certContent=" + certModel.getContent() + "&certCommentLabel=" + certModel.getCommentLabel() + "&certCommentContent=" + certModel.getCommentContent() + "&certTitle=" + certModel.getTitle() + "&certSubTitle=" + certModel.getSubTitle() + "&certIssuer=" + certModel.getIssuer());
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        certModel.setUrl(certServer + "default/assess/assessment/certification?preview=true&certContent=" + certModel.getContent() + "&certCommentLabel=" + certModel.getCommentLabel() + "&certCommentContent=" + certModel.getCommentContent() + "&certTitle=" + certModel.getTitle() + "&certSubTitle=" + certModel.getSubTitle() + "&certIssuer=" + certModel.getIssuer()+"&certIssueDate=" + simpleDateFormat.format(certModel.getDate()));
         certGenerator.printCertification(certModel, outputStream);
     }
 
