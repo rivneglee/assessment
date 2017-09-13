@@ -217,6 +217,19 @@ public class AssessmentEntityServiceImpl extends AbstractEntityService<Assessmen
     }
 
 
+    private String getStatusText(Form form) {
+        switch (form.getStatus()) {
+            case "A":
+            case "S":
+                return "未完成";
+            case "C":
+                return "已提交";
+            case "F":
+                return "已审核";
+        }
+        return "未知状态";
+    }
+
     // to-do: refactor later
     @Override
     public void exportToExcel(Assessment assessment, OutputStream outputStream) throws IOException, WriteException {
@@ -228,10 +241,28 @@ public class AssessmentEntityServiceImpl extends AbstractEntityService<Assessmen
         labelFormat.setVerticalAlignment(VerticalAlignment.CENTRE);
         labelFormat.setAlignment(Alignment.CENTRE);
         labelFormat.setWrap(false);
+
+        // render summary
+        WritableSheet summarySheet = workbook.createSheet("总览", 0);
+        summarySheet.addCell(new Label(0, 2, "单位名称", labelFormat));
+        summarySheet.addCell(new Label(1, 2, "状态", labelFormat));
+        summarySheet.addCell(new Label(2, 2, "考评得分", labelFormat));
+        summarySheet.addCell(new Label(4, 2, "附加分", labelFormat));
+        summarySheet.addCell(new Label(6, 2, "总分", labelFormat));
+        int rowIdx = 3;
+        for (Form form : assessment.getForms()) {
+            rowIdx++;
+            summarySheet.addCell(new Label(0, rowIdx, form.getOwnerName(), labelFormat));
+            summarySheet.addCell(new Label(1, rowIdx, getStatusText(form), labelFormat));
+            summarySheet.addCell(new Label(2, rowIdx, form.getTotalScore().toString(), labelFormat));
+            summarySheet.addCell(new Label(4, rowIdx, form.getAdditionalScore().toString(), labelFormat));
+            summarySheet.addCell(new Label(6, rowIdx, new Double(form.getTotalScore() + form.getAdditionalScore()).toString(), labelFormat));
+        }
+
         // render groups
         for (int i = 0; i < template.getGroups().size(); i++) {
             GroupSection group = template.getGroups().get(i);
-            WritableSheet sheet = workbook.createSheet(group.getName(), i);
+            WritableSheet sheet = workbook.createSheet(group.getName(), i + 1);
             // render rows
             for (int j = 0; j < group.getRows().size(); j++) {
                 GroupRow row = group.getRows().get(j);
