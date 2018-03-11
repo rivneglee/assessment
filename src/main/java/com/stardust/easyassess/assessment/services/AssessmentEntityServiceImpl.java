@@ -1,10 +1,8 @@
 package com.stardust.easyassess.assessment.services;
 
-import com.stardust.easyassess.assessment.dao.repositories.ArticleRepository;
-import com.stardust.easyassess.assessment.dao.repositories.AssessmentRepository;
-import com.stardust.easyassess.assessment.dao.repositories.DataRepository;
-import com.stardust.easyassess.assessment.dao.repositories.FormRepository;
+import com.stardust.easyassess.assessment.dao.repositories.*;
 import com.stardust.easyassess.assessment.models.Article;
+import com.stardust.easyassess.assessment.models.ArticleReader;
 import com.stardust.easyassess.assessment.models.Assessment;
 import com.stardust.easyassess.assessment.models.CertificationModel;
 import com.stardust.easyassess.assessment.models.form.*;
@@ -38,6 +36,9 @@ public class AssessmentEntityServiceImpl extends AbstractEntityService<Assessmen
 
     @Autowired
     ArticleRepository articleRepository;
+
+    @Autowired
+    ArticleReaderRepository articleReaderRepository;
 
     @Autowired
     FormTemplateService formTemplateService;
@@ -91,6 +92,9 @@ public class AssessmentEntityServiceImpl extends AbstractEntityService<Assessmen
             assessment.getForms().add(form);
             formRepository.save(form);
             assessmentRepository.save(assessment);
+            if (assessment.getArticles() != null) {
+                assessment.getArticles().forEach(article -> articleReaderRepository.save(new ArticleReader(article, participant)));
+            }
             return form;
         }
 
@@ -108,6 +112,9 @@ public class AssessmentEntityServiceImpl extends AbstractEntityService<Assessmen
                     assessment.getParticipants().remove(participantId);
                     formRepository.delete(form);
                     assessmentRepository.save(assessment);
+                    if (assessment.getArticles() != null) {
+                        assessment.getArticles().forEach(article -> articleReaderRepository.removeArticlesReaderByArticleIdAndReaderId(article.getId(), participantId));
+                    }
                     return form;
                 }
             }
@@ -352,10 +359,22 @@ public class AssessmentEntityServiceImpl extends AbstractEntityService<Assessmen
     }
 
     @Override
+    public void removeArticles(Assessment assessment) {
+        if (assessment.getArticles() != null) {
+            assessment.getArticles().forEach(article -> {
+                articleReaderRepository.removeArticlesReaderByArticleId(article.getId());
+                articleRepository.delete(article);
+            });
+        }
+    }
+
+    @Override
     public Article saveArticle(String id, Article article) {
         Assessment assessment = get(id);
         article.setDate(new Date());
         article.setAssessmentId(id);
+        article.setAuthorName(assessment.getOwnerName());
+        article.setAuthorId(assessment.getOwner());
         if (assessment != null) {
             articleRepository.save(article);
             if (article.getId() != null
@@ -364,6 +383,7 @@ public class AssessmentEntityServiceImpl extends AbstractEntityService<Assessmen
                         = assessment.getArticles().stream().filter(a -> a!= null && a.getId().equals(article.getId())).findAny().isPresent();
                 if (!alreadySaved) {
                     assessment.getArticles().add(article);
+                    assessment.getParticipants().keySet().forEach(p -> articleReaderRepository.save(new ArticleReader(article, p)));
                     save(assessment);
                 }
             }
@@ -379,6 +399,7 @@ public class AssessmentEntityServiceImpl extends AbstractEntityService<Assessmen
         if (assessment != null) {
             articleRepository.delete(article);
             assessment.getArticles().remove(article);
+            articleReaderRepository.removeArticlesReaderByArticleId(articleId);
             save(assessment);
         }
         return article;

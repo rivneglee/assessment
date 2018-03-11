@@ -39,6 +39,8 @@ public interface AssessmentService extends EntityService<Assessment> {
 
     List<Article> getArticles(String id);
 
+    void removeArticles(Assessment assessment);
+
     Article saveArticle(String id, Article article);
 
     Article removeArticle(String id, String articleId);

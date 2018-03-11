@@ -82,6 +82,7 @@ public class AssessmentController extends MaintenanceController<Assessment> {
         for (Form form : assessment.getForms()) {
             formService.remove(form.getId());
         }
+        ((AssessmentService)getService()).removeArticles(assessment);
         return true;
     }
 

@@ -2,8 +2,11 @@ package com.stardust.easyassess.assessment.models;
 
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
+
 import java.util.*;
 
 @Document(collection = "articles")
@@ -15,9 +18,11 @@ public class Article extends DataModel {
 
     private String content;
 
-    private Owner owner;
-
     private String assessmentId;
+
+    private String authorName;
+
+    private String authorId;
 
     @JsonFormat(pattern="yyyy-MM-dd")
     private Date date;
@@ -46,20 +51,28 @@ public class Article extends DataModel {
         this.content = content;
     }
 
-    public Owner getOwner() {
-        return owner;
-    }
-
-    public void setOwner(Owner owner) {
-        this.owner = owner;
-    }
-
     public Date getDate() {
         return date;
     }
 
     public void setDate(Date date) {
         this.date = date;
+    }
+
+    public String getAuthorName() {
+        return authorName;
+    }
+
+    public void setAuthorName(String authorName) {
+        this.authorName = authorName;
+    }
+
+    public String getAuthorId() {
+        return authorId;
+    }
+
+    public void setAuthorId(String authorId) {
+        this.authorId = authorId;
     }
 
     @Override
