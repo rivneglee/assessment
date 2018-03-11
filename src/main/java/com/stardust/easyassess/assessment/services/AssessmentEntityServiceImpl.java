@@ -1,8 +1,10 @@
 package com.stardust.easyassess.assessment.services;
 
+import com.stardust.easyassess.assessment.dao.repositories.ArticleRepository;
 import com.stardust.easyassess.assessment.dao.repositories.AssessmentRepository;
 import com.stardust.easyassess.assessment.dao.repositories.DataRepository;
 import com.stardust.easyassess.assessment.dao.repositories.FormRepository;
+import com.stardust.easyassess.assessment.models.Article;
 import com.stardust.easyassess.assessment.models.Assessment;
 import com.stardust.easyassess.assessment.models.CertificationModel;
 import com.stardust.easyassess.assessment.models.form.*;
@@ -33,6 +35,9 @@ public class AssessmentEntityServiceImpl extends AbstractEntityService<Assessmen
 
     @Autowired
     FormRepository formRepository;
+
+    @Autowired
+    ArticleRepository articleRepository;
 
     @Autowired
     FormTemplateService formTemplateService;
@@ -339,6 +344,44 @@ public class AssessmentEntityServiceImpl extends AbstractEntityService<Assessmen
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
         certModel.setUrl(certServer + "default/assess/assessment/certification?preview=true&certContent=" + certModel.getContent() + "&certCommentLabel=" + certModel.getCommentLabel() + "&certCommentContent=" + certModel.getCommentContent() + "&certTitle=" + certModel.getTitle() + "&certSubTitle=" + certModel.getSubTitle() + "&certIssuer=" + certModel.getIssuer()+"&certIssueDate=" + simpleDateFormat.format(certModel.getDate()));
         certGenerator.printCertification(certModel, outputStream);
+    }
+
+    @Override
+    public List<Article> getArticles(String id) {
+        return get(id).getArticles();
+    }
+
+    @Override
+    public Article saveArticle(String id, Article article) {
+        Assessment assessment = get(id);
+        article.setDate(new Date());
+        article.setAssessmentId(id);
+        if (assessment != null) {
+            articleRepository.save(article);
+            if (article.getId() != null
+                    && !article.getId().isEmpty()) {
+                boolean alreadySaved
+                        = assessment.getArticles().stream().filter(a -> a!= null && a.getId().equals(article.getId())).findAny().isPresent();
+                if (!alreadySaved) {
+                    assessment.getArticles().add(article);
+                    save(assessment);
+                }
+            }
+        }
+
+        return article;
+    }
+
+    @Override
+    public Article removeArticle(String id, String articleId) {
+        Assessment assessment = get(id);
+        Article article = articleRepository.findOne(articleId);
+        if (assessment != null) {
+            articleRepository.delete(article);
+            assessment.getArticles().remove(article);
+            save(assessment);
+        }
+        return article;
     }
 
     private Double calculateScore(ExpectionOption expectation, ActualValue av) {

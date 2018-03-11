@@ -1,6 +1,7 @@
 package com.stardust.easyassess.assessment.controllers;
 
 
+import com.stardust.easyassess.assessment.models.Article;
 import com.stardust.easyassess.assessment.models.Assessment;
 import com.stardust.easyassess.assessment.models.CertificationModel;
 import com.stardust.easyassess.assessment.models.Owner;
@@ -102,6 +103,31 @@ public class AssessmentController extends MaintenanceController<Assessment> {
     public ViewJSONWrapper getSpecimenGuid(@PathVariable String id, @PathVariable String group, @PathVariable String code) {
         Specimen specimen = ((AssessmentService) getService()).findSpecimen(id, group, code);
         return new ViewJSONWrapper(specimen == null ? "" : specimen.getGuid());
+    }
+
+    @RequestMapping(path = "/{id}/articles",
+            method = {RequestMethod.GET})
+    public ViewJSONWrapper getArticles(@PathVariable String id) {
+        return new ViewJSONWrapper(((AssessmentService) getService()).getArticles(id));
+    }
+
+    @RequestMapping(path = "/{id}/articles/{articleId}",
+            method = {RequestMethod.DELETE})
+    public ViewJSONWrapper removeArticle(@PathVariable String id, @PathVariable String articleId) {
+        return new ViewJSONWrapper(((AssessmentService) getService()).removeArticle(id, articleId));
+    }
+
+    @RequestMapping(path = "/{id}/articles",
+            method = {RequestMethod.POST})
+    public ViewJSONWrapper addArticle(@PathVariable String id, @RequestBody Article article) {
+        return new ViewJSONWrapper(((AssessmentService) getService()).saveArticle(id, article));
+    }
+
+    @RequestMapping(path = "/{id}/articles/{articleId}",
+            method = {RequestMethod.PUT})
+    public ViewJSONWrapper updateArticle(@PathVariable String id, @PathVariable String articleId, @RequestBody Article article) {
+        article.setId(articleId);
+        return new ViewJSONWrapper(((AssessmentService) getService()).saveArticle(id, article));
     }
 
     @RequestMapping(path = "/finalize/{id}",

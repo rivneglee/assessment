@@ -67,6 +67,9 @@ public class Assessment extends DataModel {
     @DBRef
     private List<Form> forms = new ArrayList<Form>();
 
+    @DBRef
+    private List<Article> articles = new ArrayList();
+
     public String getOwnerName() {
         return ownerName;
     }
@@ -201,5 +204,14 @@ public class Assessment extends DataModel {
 
     public void setCertSubTitle(String certSubTitle) {
         this.certSubTitle = certSubTitle;
+    }
+
+    public void setArticles(List<Article> articles) {
+        this.articles = articles;
+    }
+
+    @JsonIgnore
+    public List<Article> getArticles() {
+        return articles;
     }
 }

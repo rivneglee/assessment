@@ -1,6 +1,7 @@
 package com.stardust.easyassess.assessment.services;
 
 
+import com.stardust.easyassess.assessment.models.Article;
 import com.stardust.easyassess.assessment.models.Assessment;
 import com.stardust.easyassess.assessment.models.CertificationModel;
 import com.stardust.easyassess.assessment.models.form.ActualValue;
@@ -35,4 +36,10 @@ public interface AssessmentService extends EntityService<Assessment> {
     void exportToExcel(Assessment assessment, OutputStream outputStream) throws IOException, WriteException;
 
     void generateAssessmentCertification(CertificationModel model, OutputStream outputStream) throws IOException;
+
+    List<Article> getArticles(String id);
+
+    Article saveArticle(String id, Article article);
+
+    Article removeArticle(String id, String articleId);
 }
