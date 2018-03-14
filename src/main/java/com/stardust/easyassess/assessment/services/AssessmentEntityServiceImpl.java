@@ -1,10 +1,8 @@
 package com.stardust.easyassess.assessment.services;
 
+import com.stardust.easyassess.assessment.common.OSSBucketAccessor;
 import com.stardust.easyassess.assessment.dao.repositories.*;
-import com.stardust.easyassess.assessment.models.Article;
-import com.stardust.easyassess.assessment.models.ArticleReader;
-import com.stardust.easyassess.assessment.models.Assessment;
-import com.stardust.easyassess.assessment.models.CertificationModel;
+import com.stardust.easyassess.assessment.models.*;
 import com.stardust.easyassess.assessment.models.form.*;
 import jxl.Workbook;
 import jxl.format.Alignment;
@@ -18,8 +16,10 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -42,6 +42,9 @@ public class AssessmentEntityServiceImpl extends AbstractEntityService<Assessmen
 
     @Autowired
     FormTemplateService formTemplateService;
+
+    @Autowired
+    AssetRepository assetRepository;
 
     @Autowired
     ApplicationContext applicationContext;
@@ -403,6 +406,53 @@ public class AssessmentEntityServiceImpl extends AbstractEntityService<Assessmen
             save(assessment);
         }
         return article;
+    }
+
+    @Override
+    public List<Asset> getAssets(String id) {
+        Assessment assessment = assessmentRepository.findOne(id);
+        if (assessment != null) return assessment.getAssets();
+        return new ArrayList();
+    }
+
+    @Override
+    public Asset addAsset(String id, String title, MultipartFile file) throws IOException {
+        Assessment assessment = assessmentRepository.findOne(id);
+        if (assessment != null) {
+            String url = (new OSSBucketAccessor()).put("assess-bucket", "notice-assets/" + id + "/" + file.getOriginalFilename(), file.getInputStream());
+            Asset asset = new Asset();
+            asset.setUrl(url);
+            asset.setTitle(title);
+            assetRepository.save(asset);
+            assessment.getAssets().add(asset);
+            assessmentRepository.save(assessment);
+            return asset;
+        }
+        return null;
+    }
+
+    @Override
+    public Asset removeAsset(String id, String assetId) {
+        Assessment assessment = get(id);
+        if (assessment != null) {
+            Asset asset = assessment.getAssets().stream().filter(a -> a.getId().equals(assetId)).findFirst().orElseGet(null);
+            if (asset != null) {
+                assessment.getAssets().remove(asset);
+                save(assessment);
+                assetRepository.delete(asset);
+                return asset;
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public void removeAssets(Assessment assessment) {
+        if (assessment.getAssets() != null) {
+            assessment.getAssets().forEach(asset -> {
+                assetRepository.delete(asset);
+            });
+        }
     }
 
     private Double calculateScore(ExpectionOption expectation, ActualValue av) {

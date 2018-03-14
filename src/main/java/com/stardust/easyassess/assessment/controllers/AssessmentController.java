@@ -1,10 +1,7 @@
 package com.stardust.easyassess.assessment.controllers;
 
 
-import com.stardust.easyassess.assessment.models.Article;
-import com.stardust.easyassess.assessment.models.Assessment;
-import com.stardust.easyassess.assessment.models.CertificationModel;
-import com.stardust.easyassess.assessment.models.Owner;
+import com.stardust.easyassess.assessment.models.*;
 import com.stardust.easyassess.assessment.models.form.Form;
 import com.stardust.easyassess.assessment.models.form.Specimen;
 import com.stardust.easyassess.assessment.services.AssessmentService;
@@ -20,6 +17,7 @@ import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.ApplicationContext;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -83,6 +81,7 @@ public class AssessmentController extends MaintenanceController<Assessment> {
             formService.remove(form.getId());
         }
         ((AssessmentService)getService()).removeArticles(assessment);
+        ((AssessmentService)getService()).removeAssets(assessment);
         return true;
     }
 
@@ -104,6 +103,27 @@ public class AssessmentController extends MaintenanceController<Assessment> {
     public ViewJSONWrapper getSpecimenGuid(@PathVariable String id, @PathVariable String group, @PathVariable String code) {
         Specimen specimen = ((AssessmentService) getService()).findSpecimen(id, group, code);
         return new ViewJSONWrapper(specimen == null ? "" : specimen.getGuid());
+    }
+
+    @RequestMapping(path = "/{id}/assets",
+            method = {RequestMethod.GET})
+    public ViewJSONWrapper getAssets(@PathVariable String id) {
+        return new ViewJSONWrapper(((AssessmentService) getService()).getAssets(id));
+    }
+
+    @RequestMapping(path = "/{id}/assets",
+            method = {RequestMethod.POST})
+    public ViewJSONWrapper addAsset(@PathVariable String id, @RequestParam("asset") MultipartFile asset) throws IOException {
+        if(!asset.isEmpty()) {
+            return new ViewJSONWrapper(((AssessmentService) getService()).addAsset(id, asset.getOriginalFilename(), asset));
+        }
+        return new ViewJSONWrapper(null);
+    }
+
+    @RequestMapping(path = "/{id}/assets/{assetId}",
+            method = {RequestMethod.DELETE})
+    public ViewJSONWrapper removeAsset(@PathVariable String id, @PathVariable String assetId) {
+        return new ViewJSONWrapper(((AssessmentService) getService()).removeAsset(id, assetId));
     }
 
     @RequestMapping(path = "/{id}/articles",

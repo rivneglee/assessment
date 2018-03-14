@@ -70,6 +70,9 @@ public class Assessment extends DataModel {
     @DBRef
     private List<Article> articles = new ArrayList();
 
+    @DBRef
+    private List<Asset> assets = new ArrayList();
+
     public String getOwnerName() {
         return ownerName;
     }
@@ -213,5 +216,13 @@ public class Assessment extends DataModel {
     @JsonIgnore
     public List<Article> getArticles() {
         return articles;
+    }
+
+    public List<Asset> getAssets() {
+        return assets;
+    }
+
+    public void setAssets(List<Asset> assets) {
+        this.assets = assets;
     }
 }
