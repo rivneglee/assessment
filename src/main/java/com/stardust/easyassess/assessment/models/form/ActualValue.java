@@ -9,6 +9,7 @@ public class ActualValue {
     private String subjectGuid;
     private String value;
     private Double score;
+    private int pos;
 
     public Double getScore() {
         return score;
@@ -64,5 +65,13 @@ public class ActualValue {
 
     public void setValue(String value) {
         this.value = value;
+    }
+
+    public int getPos() {
+        return pos;
+    }
+
+    public void setPos(int pos) {
+        this.pos = pos;
     }
 }
