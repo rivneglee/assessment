@@ -8,6 +8,20 @@ import java.util.List;
 @Document(collection = "templates")
 public class FormTemplate extends FormElement {
 
+	public FormTemplate() {
+
+	}
+
+	public FormTemplate(FormTemplate source) {
+		this.owner = source.owner;
+		this.header = source.header;
+		this.footer = source.footer;
+		this.groups = source.groups;
+		this.guid = source.guid;
+		this.status = source.status;
+		this.enableSharing = source.enableSharing;
+	}
+
 	@Id
 	private String id;
 
@@ -18,6 +32,10 @@ public class FormTemplate extends FormElement {
 	private FormHeader header;
 
 	private FormFooter footer;
+
+	private String status;
+
+	private boolean enableSharing;
 
 	private List<GroupSection> groups;
 
@@ -71,5 +89,21 @@ public class FormTemplate extends FormElement {
 
 	public void setOwner(String owner) {
 		this.owner = owner;
+	}
+
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
+
+	public boolean isEnableSharing() {
+		return enableSharing;
+	}
+
+	public void setEnableSharing(boolean enableSharing) {
+		this.enableSharing = enableSharing;
 	}
 }
