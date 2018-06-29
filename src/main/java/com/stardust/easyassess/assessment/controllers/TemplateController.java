@@ -38,7 +38,7 @@ public class TemplateController extends MaintenanceController<FormTemplate> {
         FormTemplate template = getService().get(id);
         template.setStatus("D");
         getService().save(template);
-        return true;
+        return false;
     }
 
     @Override

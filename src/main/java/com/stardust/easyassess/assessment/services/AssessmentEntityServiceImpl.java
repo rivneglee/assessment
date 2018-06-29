@@ -57,6 +57,12 @@ public class AssessmentEntityServiceImpl extends AbstractEntityService<Assessmen
     public void createAssessment(Assessment assessment) {
         assessment.setStatus("A");
         assessment.setId(UUID.randomUUID().toString());
+        FormTemplate template = formTemplateService.get(assessment.getTemplateGuid());
+
+        FormTemplate clone = new FormTemplate(template);
+        clone.setStatus("D");
+        formTemplateService.save(clone);
+        assessment.setTemplateGuid(clone.getId());
 
         List<Form> forms = new ArrayList<Form>();
         for (String participant : assessment.getParticipants().keySet()) {
