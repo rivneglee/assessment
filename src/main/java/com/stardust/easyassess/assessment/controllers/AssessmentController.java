@@ -101,7 +101,7 @@ public class AssessmentController extends MaintenanceController<Assessment> {
     @RequestMapping(path = "/{id}/group/{group}/specimen/guid/{code}",
             method = {RequestMethod.GET})
     public ViewJSONWrapper getSpecimenGuid(@PathVariable String id, @PathVariable String group, @PathVariable String code) {
-        Specimen specimen = ((AssessmentService) getService()).findSpecimen(id, group, code);
+        Specimen specimen = ((AssessmentService) getService()).findSpecimen(id, group, code.replace("%slash%", "/"));
         return new ViewJSONWrapper(specimen == null ? "" : specimen.getGuid());
     }
 
