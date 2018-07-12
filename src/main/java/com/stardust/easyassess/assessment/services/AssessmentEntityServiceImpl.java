@@ -90,7 +90,7 @@ public class AssessmentEntityServiceImpl extends AbstractEntityService<Assessmen
     @Override
     public Form addParticipant(String assessmentId, String participant, String participantName) {
         Assessment assessment = this.get(assessmentId);
-        if (assessment.getStatus().equals("A")) {
+        if (assessment.getStatus().equals("A") && !assessment.getParticipants().containsKey(participant)) {
             assessment.getParticipants().put(participant, participantName);
             Form form = new Form();
             form.setOwner(participant);
