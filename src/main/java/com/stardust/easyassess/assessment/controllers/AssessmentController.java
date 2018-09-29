@@ -213,7 +213,7 @@ public class AssessmentController extends MaintenanceController<Assessment> {
             form.setCodes(null);
             form.setDetails(null);
             form.setSignatures(null);
-            form.setValues(null);
+            // form.setValues(null);
             form.setSubmitDate(null);
         }
 
