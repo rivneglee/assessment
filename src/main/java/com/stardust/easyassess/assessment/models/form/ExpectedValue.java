@@ -5,7 +5,7 @@ public class ExpectedValue extends FormElement {
 	
 	private String value;
 	
-	private int weight;
+	private double weight;
 	
 	public String getValue() {
 		return value;
@@ -15,11 +15,11 @@ public class ExpectedValue extends FormElement {
 		this.value = value;
 	}
 
-	public int getWeight() {
+	public double getWeight() {
 		return weight;
 	}
 
-	public void setWeight(int weight) {
+	public void setWeight(double weight) {
 		this.weight = weight;
 	}
 
