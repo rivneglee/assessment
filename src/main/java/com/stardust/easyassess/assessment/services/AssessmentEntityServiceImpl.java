@@ -164,7 +164,6 @@ public class AssessmentEntityServiceImpl extends AbstractEntityService<Assessmen
                     }
                 } else if (codes.contains(specimenCode)) {
                     specimenNumberSet.add(specimenNumber);
-                    break;
                 }
             }
 
@@ -174,8 +173,7 @@ public class AssessmentEntityServiceImpl extends AbstractEntityService<Assessmen
                 for (GroupSection groups : template.getGroups()) {
                     if (!groups.getGuid().equals(groupId)) continue;
                     for (Specimen specimen : groups.getSpecimens()) {
-                        if (specimenNumberSet.size() == 1
-                                && !specimen.getNumber().contains("+")
+                        if (!specimen.getNumber().contains("+")
                                 && specimenNumberSet.contains(specimen.getNumber())) {
                             return specimen;
                         }
