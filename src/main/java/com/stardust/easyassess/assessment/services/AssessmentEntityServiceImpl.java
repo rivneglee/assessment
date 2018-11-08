@@ -140,6 +140,7 @@ public class AssessmentEntityServiceImpl extends AbstractEntityService<Assessmen
                 if (form.getStatus().equals("F")) {
                     form.setStatus("C");
                 }
+                form.getValues().forEach(v -> v.setScore(0.0));
                 formRepository.save(form);
             }
             assessment.setStatus("A");
