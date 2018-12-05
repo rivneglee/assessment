@@ -216,7 +216,7 @@ public class Form extends FormElement {
         if ("F".equals(status)
                 && getAssessment().isEnableCert()
                 && "F".equals(getAssessment().getStatus())
-                && getTotalScore().compareTo(getAssessment().getPassScore()) >= 0) {
+                && new Double(getTotalScore() + getAdditionalScore()).compareTo(getAssessment().getPassScore()) >= 0) {
             return true;
         }
         return false;
