@@ -282,6 +282,7 @@ public class AssessmentEntityServiceImpl extends AbstractEntityService<Assessmen
         // render groups
         for (int i = 0; i < template.getGroups().size(); i++) {
             GroupSection group = template.getGroups().get(i);
+            if (group.getName() == null || group.getRows().size() == 0) continue;
             WritableSheet sheet = workbook.createSheet(group.getName(), i + 1);
             // render rows
             for (int j = 0; j < group.getRows().size(); j++) {
