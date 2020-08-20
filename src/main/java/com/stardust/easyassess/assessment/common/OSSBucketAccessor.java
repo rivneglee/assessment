@@ -9,7 +9,7 @@ import java.io.InputStream;
 public class OSSBucketAccessor implements StorageAccessor {
     private String endpoint = "oss-cn-beijing.aliyuncs.com";
     private String accessKeyId = "LTAI8L5rmT1XGcFj";
-    private String accessKeySecret = "bY3jO5KTYFUimCU9ViNSYfr4Dv4Pqw";
+    private String accessKeySecret = "";
     private OSSClient client;
 
     public OSSBucketAccessor() {
