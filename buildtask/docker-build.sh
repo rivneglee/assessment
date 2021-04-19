@@ -2,6 +2,10 @@
 
 export ES_ENV="prod"
 rm -rf target
+git clone git@github.com:EasyAssessSystem/core.git
+cd core
+mvn clean install -Dmaven.test.skip=true
+cd ..
 mvn clean package -Dmaven.test.skip=true
 pwd
 ls
