@@ -209,12 +209,14 @@ public class AssessmentController extends MaintenanceController<Assessment> {
     public ViewJSONWrapper getForms(@PathVariable String id) throws Exception {
         Assessment assessment = getService().get(id);
         for (Form form : assessment.getForms()) {
-            form.getTotalScore();
-            form.setCodes(null);
-            form.setDetails(null);
-            form.setSignatures(null);
-            // form.setValues(null);
-            form.setSubmitDate(null);
+            if (form != null) {
+                form.getTotalScore();
+                form.setCodes(null);
+                form.setDetails(null);
+                form.setSignatures(null);
+                // form.setValues(null);
+                form.setSubmitDate(null);
+            }
         }
 
         return new ViewJSONWrapper(assessment);
