@@ -1,0 +1,38 @@
+version: 2
+jobs:
+  build:
+    docker:
+      - image: circleci/openjdk:8-jdk
+    steps:
+      - checkout
+      - setup_remote_docker
+      - run:
+          command: ./buildtask/docker-build.sh
+      - run:
+          command: ./buildtask/docker-push.sh
+  deploy:
+    docker:
+      - image: circleci/openjdk:8-jdk
+    steps:
+      - checkout
+      - setup_remote_docker
+      - run:
+          command: ./buildtask/docker-deploy.sh
+workflows:
+  version: 2
+  build_and_deploy:
+    jobs:
+      - build
+      - hold:
+          filters:
+            branches:
+              #only: master
+          type: approval
+          requires:
+            - build
+      - deploy:
+          filters:
+            branches:
+              #only: master
+          requires:
+            - hold
